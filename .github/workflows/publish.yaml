@@ -28,35 +28,7 @@ jobs:
           dotnet pack \
             -c Release \
             -o ${{ env.NUGET_OUTPUT }} \
-            -p:Version=$BUILD_VERSION \
-            --runtime win-x64
-          dotnet pack \
-            -c Release \
-            -o ${{ env.NUGET_OUTPUT }} \
-            -p:Version=$BUILD_VERSION \
-            --runtime win-arm64
-
-          dotnet pack \
-            -c Release \
-            -o ${{ env.NUGET_OUTPUT }} \
-            -p:Version=$BUILD_VERSION \
-            --runtime linux-x64
-          dotnet pack \
-            -c Release \
-            -o ${{ env.NUGET_OUTPUT }} \
-            -p:Version=$BUILD_VERSION \
-            --runtime linux-arm64
-
-          dotnet pack \
-            -c Release \
-            -o ${{ env.NUGET_OUTPUT }} \
-            -p:Version=$BUILD_VERSION \
-            --runtime osx-x64
-          dotnet pack \
-            -c Release \
-            -o ${{ env.NUGET_OUTPUT }} \
-            -p:Version=$BUILD_VERSION \
-            --runtime osx-arm64
+            -p:Version=$BUILD_VERSION
       
       - name: Upload Packages to Artifacts
         uses: actions/upload-artifact@v4
