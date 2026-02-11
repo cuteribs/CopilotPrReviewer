@@ -15,7 +15,7 @@ AI-powered pull request code reviewer for Azure DevOps using GitHub Copilot SDK.
 
 - .NET 10 SDK
 - GitHub Copilot CLI installed and authenticated
-- Azure DevOps Personal Access Token (PAT) with Code (Read & Write) permissions
+- Azure DevOps authentication via OAuth, or Personal Access Token (PAT) with Code (Read & Write) permissions
 
 ## Installation
 
@@ -49,25 +49,45 @@ This is useful for:
 
 ## Configuration
 
-### Required Environment Variables
+### Required: Azure DevOps Authentication
 
-#### 1. Azure DevOps Authentication
+You have two authentication options for Azure DevOps:
 
-Set your Azure DevOps Personal Access Token:
+#### Option 1: OAuth (Recommended - Interactive Browser Login)
+
+No setup required! The app will automatically open your browser for authentication on first use.
+
+```bash
+copilot-pr-reviewer <Pull Request URL>
+```
+
+#### Option 2: Personal Access Token (PAT)
+
+Provide your PAT via CLI argument or environment variable:
+
+**Via CLI Argument:**
+```bash
+copilot-pr-reviewer <Pull Request URL> --pat "your-ado-pat-token"
+```
+
+**Via Environment Variable:**
 
 **PowerShell:**
 ```powershell
-$env:AzureDevOps__Pat = "your-ado-pat-token"
+$env:AZURE_DEVOPS_PAT = "your-ado-pat-token"
+copilot-pr-reviewer <Pull Request URL>
 ```
 
 **Command Prompt (cmd.exe):**
 ```batch
-set AzureDevOps__Pat=your-ado-pat-token
+set AZURE_DEVOPS_PAT=your-ado-pat-token
+copilot-pr-reviewer <Pull Request URL>
 ```
 
 **Bash (Linux/macOS):**
 ```bash
-export AzureDevOps__Pat="your-ado-pat-token"
+export AZURE_DEVOPS_PAT="your-ado-pat-token"
+copilot-pr-reviewer <Pull Request URL>
 ```
 
 **Creating an Azure DevOps PAT:**
@@ -79,7 +99,7 @@ export AzureDevOps__Pat="your-ado-pat-token"
 6. Click "Create"
 7. **Copy the token immediately** (won't be shown again)
 
-#### 2. GitHub Copilot Authentication
+### Required: GitHub Copilot Authentication
 
 The GitHub Copilot SDK requires authentication via GitHub CLI or `GITHUB_TOKEN` environment variable.
 
@@ -131,7 +151,7 @@ export GITHUB_TOKEN="ghp_your-github-token"
 
 #### appsettings.json
 
-You can create an `appsettings.json` file in the execution directory:
+You can create an `appsettings.json` file in the execution directory to customize Copilot and Review settings:
 
 ```json
 {
@@ -177,7 +197,7 @@ export COPILOT_PR_REVIEWER_Copilot__MaxParallelBatches="8"
 
 ### Basic Usage
 
-Review a pull request:
+Review a pull request with OAuth (interactive browser login):
 
 ```bash
 copilot-pr-reviewer <Pull Request URL>
@@ -189,47 +209,53 @@ Or with `dnx` (no installation required):
 dnx Cuteribs.CopilotPrReviewer <Pull Request URL>
 ```
 
-For CI/CD (e.g., Azure Pipelines YAML):
+For CI/CD (e.g., Azure Pipelines YAML with OAuth):
 
 ```yaml
 - script: |
-    copilot-pr-reviewer $(PR_URL)
-  displayName: 'Review PR with AI'
+    dnx Cuteribs.CopilotPrReviewer $(System.PullRequest.SourceRepositoryUri)/pullrequest/$(System.PullRequest.PullRequestId)
+  displayName: 'Review PR with AI (OAuth)'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
-    AzureDevOps__Pat: $(AZURE_DEVOPS_PAT)
 ```
 
-Or using `dnx` (preferred for CI/CD):
+Or using PAT (if interactive login is not possible):
 
 ```yaml
-- script: dnx Cuteribs.CopilotPrReviewer $(PR_URL)
-  displayName: 'Review PR with AI'
+- script: dnx Cuteribs.CopilotPrReviewer $(System.PullRequest.SourceRepositoryUri)/pullrequest/$(System.PullRequest.PullRequestId)
+  displayName: 'Review PR with AI (PAT)'
   env:
-    AzureDevOps__Pat: $(AZURE_DEVOPS_PAT)
     GITHUB_TOKEN: $(GITHUB_TOKEN)
+    AZURE_DEVOPS_PAT: $(AZURE_DEVOPS_PAT)
 ```
 
+### Advanced Usage Examples
+
 ```bash
-# Specify PAT via CLI
-copilot-pr-reviewer <Pull Request URL> \
-  --pat "your-ado-pat"
+# OAuth (default, interactive browser login - no extra config needed!)
+copilot-pr-reviewer <Pull Request URL>
+
+# PAT via CLI argument
+copilot-pr-reviewer <Pull Request URL> --pat "your-ado-pat"
+
+# PAT via environment variable (from AZURE_DEVOPS_PAT)
+copilot-pr-reviewer <Pull Request URL>
+
+# Explicit authentication type
+copilot-pr-reviewer <Pull Request URL> --auth-type oauth
+copilot-pr-reviewer <Pull Request URL> --auth-type pat
 
 # Use a different AI model
-copilot-pr-reviewer <Pull Request URL> \
-  --model "gpt-5"
+copilot-pr-reviewer <Pull Request URL> --model "gpt-5"
 
 # Dry run (no comments posted)
-copilot-pr-reviewer <Pull Request URL> \
-  --no-comments
+copilot-pr-reviewer <Pull Request URL> --no-comments
 
 # Use custom guidelines
-copilot-pr-reviewer <Pull Request URL> \
-  --guidelines-path "./custom-guidelines"
+copilot-pr-reviewer <Pull Request URL> --guidelines-path "./custom-guidelines"
 
 # Maximum parallel batches
-copilot-pr-reviewer <Pull Request URL> \
-  --max-parallel 8
+copilot-pr-reviewer <Pull Request URL> --max-parallel 8
 ```
 
 ### Full Command Options
@@ -237,7 +263,8 @@ copilot-pr-reviewer <Pull Request URL> \
 ```
 Options:
   --pr-url <pr-url> (REQUIRED)         Azure DevOps pull request URL
-  --pat <pat>                          Azure DevOps personal access token
+  --pat <pat>                          Azure DevOps personal access token (optional)
+  --auth-type <auth-type>              Authentication type: 'pat', 'oauth' (default: auto-detect)
   --model <model>                      AI model to use for review (default: gpt-5-mini)
   --guidelines-path <guidelines-path>  Path to external guidelines folder
   --max-parallel <max-parallel>        Maximum parallel batch reviews (default: 4)
@@ -328,7 +355,9 @@ Place your custom guideline files in the folder:
 
 ## CI/CD Integration
 
-### Azure Pipelines
+### Azure Pipelines (Using OAuth - No PAT Needed!)
+
+The recommended approach for Azure Pipelines is to use OAuth since the tool automatically handles interactive authentication in supported environments:
 
 ```yaml
 - task: UseDotNet@2
@@ -339,10 +368,28 @@ Place your custom guideline files in the folder:
 
 - script: |
     dnx Cuteribs.CopilotPrReviewer $(System.PullRequest.SourceRepositoryUri)/pullrequest/$(System.PullRequest.PullRequestId)
-  displayName: 'Review PR with AI'
+  displayName: 'Review PR with AI (OAuth)'
   env:
-    AzureDevOps__Pat: $(AZURE_DEVOPS_PAT)
     GITHUB_TOKEN: $(GITHUB_TOKEN)
+```
+
+### Azure Pipelines (Using PAT - For Non-Interactive Environments)
+
+If running in a non-interactive environment without browser access, use PAT:
+
+```yaml
+- task: UseDotNet@2
+  displayName: 'Install .NET 10 SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '10.x'
+
+- script: |
+    dnx Cuteribs.CopilotPrReviewer $(System.PullRequest.SourceRepositoryUri)/pullrequest/$(System.PullRequest.PullRequestId)
+  displayName: 'Review PR with AI (PAT)'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    AZURE_DEVOPS_PAT: $(AZURE_DEVOPS_PAT)
 ```
 
 ### GitHub Actions (for Azure DevOps PRs)
@@ -356,15 +403,29 @@ Place your custom guideline files in the folder:
 - name: Review PR
   run: dnx Cuteribs.CopilotPrReviewer ${{ github.event.pull_request.html_url }}
   env:
-    AzureDevOps__Pat: ${{ secrets.AZURE_DEVOPS_PAT }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
 ```
 
 ## Troubleshooting
 
 ### "Azure DevOps PAT is not configured"
 
-Set the `AzureDevOps__Pat` environment variable or provide it via `--pat` argument.
+This error means the tool is set to use PAT authentication but no token was found. Provide it via:
+
+1. **CLI argument:** `--pat "your-ado-pat"`
+2. **Environment variable:** `AZURE_DEVOPS_PAT=your-ado-pat`
+
+Or switch to OAuth (default):
+```bash
+copilot-pr-reviewer <Pull Request URL>
+```
+
+### Browser doesn't open for OAuth login
+
+If you're in a non-interactive or headless environment (CI/CD), you can:
+1. Use PAT authentication instead (set `AZURE_DEVOPS_PAT` environment variable)
+2. Or explicitly specify: `--auth-type pat`
 
 ### "GitHub Copilot CLI not found"
 

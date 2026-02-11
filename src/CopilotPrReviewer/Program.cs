@@ -7,6 +7,7 @@ using System.CommandLine;
 
 var prUrlArg = new Argument<string>("--pr-url") { Description = "The URL of the pull request to review" };
 var patOption = new Option<string?>("--pat") { Description = "Azure DevOps personal access token" };
+var authTypeOption = new Option<string?>("--auth-type") { Description = "Authentication type: 'pat', 'oauth' (default: auto-detect)" };
 var modelOption = new Option<string?>("--model") { Description = "AI model to use for review" };
 var guidelinesPathOption = new Option<string?>("--guidelines-path") { Description = "Path to external guidelines folder" };
 var maxParallelOption = new Option<int?>("--max-parallel") { Description = "Maximum parallel batch reviews" };
@@ -16,6 +17,7 @@ var rootCommand = new RootCommand("CopilotPrReviewer - AI-powered PR code review
 {
 	prUrlArg,
 	patOption,
+	authTypeOption,
 	modelOption,
 	guidelinesPathOption,
 	maxParallelOption,
@@ -26,10 +28,15 @@ rootCommand.SetAction(async parseResult =>
 {
 	var prUrl = parseResult.GetRequiredValue(prUrlArg)!;
 	var pat = parseResult.GetValue(patOption);
+	var authType = parseResult.GetValue(authTypeOption);
 	var model = parseResult.GetValue(modelOption);
 	var guidelinesPath = parseResult.GetValue(guidelinesPathOption);
 	var maxParallel = parseResult.GetValue(maxParallelOption);
 	var noComments = parseResult.GetValue(noCommentsOption);
+
+	// Set PAT from CLI argument to environment variable for authenticator to use
+	if (!string.IsNullOrEmpty(pat))
+		Environment.SetEnvironmentVariable("AZURE_DEVOPS_PAT", pat);
 
 	// Build configuration: appsettings.json < env vars < CLI args
 	var configBuilder = new ConfigurationBuilder()
@@ -40,8 +47,8 @@ rootCommand.SetAction(async parseResult =>
 	// Override with CLI args
 	var cliOverrides = new Dictionary<string, string?>();
 
-	if (!string.IsNullOrEmpty(pat))
-		cliOverrides[$"{AzureDevOpsSettings.SectionName}:Pat"] = pat;
+	if (!string.IsNullOrEmpty(authType))
+		cliOverrides[$"{AzureDevOpsSettings.SectionName}:AuthType"] = authType;
 
 	if (!string.IsNullOrEmpty(model))
 		cliOverrides[$"{CopilotSettings.SectionName}:Model"] = model;

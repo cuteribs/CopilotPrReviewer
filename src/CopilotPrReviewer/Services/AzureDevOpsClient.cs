@@ -1,3 +1,4 @@
+using Cuteribs.CopilotPrReviewer.Auth;
 using Cuteribs.CopilotPrReviewer.Configuration;
 using Cuteribs.CopilotPrReviewer.Models;
 using DiffPlex;
@@ -16,20 +17,21 @@ public partial class AzureDevOpsClient
     private const string ApiVersion = "7.1";
     private readonly HttpClient _httpClient;
     private readonly AzureDevOpsSettings _settings;
+    private readonly IAuthenticator _authenticator;
+    private AuthOptions? _cachedAuthOptions;
 
     public AzureDevOpsClient(HttpClient httpClient, IOptions<AzureDevOpsSettings> settings)
     {
         _httpClient = httpClient;
         _settings = settings.Value;
+        _authenticator = AuthenticatorFactory.CreateAuthenticator(_settings.AuthType);
     }
 
     public PrInfo ParsePrUrl(string prUrl)
     {
         var prInfo = ParsePrUrlInternal(prUrl, DevAzureRegex())
-                     ?? ParsePrUrlInternal(prUrl, VisualStudioRegex());
-
-        if (prInfo == null)
-            throw new ArgumentException("Invalid Azure DevOps PR URL format", nameof(prUrl));
+            ?? ParsePrUrlInternal(prUrl, VisualStudioRegex())
+            ?? throw new ArgumentException("Invalid Azure DevOps PR URL format", nameof(prUrl));
 
         return prInfo;
     }
@@ -142,19 +144,30 @@ public partial class AzureDevOpsClient
         return $"**[{severity}]**\n\n{commentText}";
     }
 
-    private void ConfigureAuthHeaders(HttpRequestMessage request)
+    private async Task ConfigureAuthHeadersAsync(HttpRequestMessage request)
     {
-        if (string.IsNullOrEmpty(_settings.Pat))
-            throw new InvalidOperationException("Azure DevOps PAT is not configured.");
+        _cachedAuthOptions ??= await _authenticator.GetAuthOptionsAsync();
+        var authOptions = _cachedAuthOptions;
 
-        var encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes($":{_settings.Pat}"));
-        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encoded);
+        if (authOptions.Type == "pat")
+        {
+            var encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes($":{authOptions.Token}"));
+            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encoded);
+        }
+        else if (authOptions.Type == "oauth")
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authOptions.Token);
+        }
+        else
+        {
+            throw new InvalidOperationException($"Unsupported authentication type: {authOptions.Type}");
+        }
     }
 
     private async Task<T> SendRequestAsync<T>(string url, HttpMethod method, object? body = null, string errorMessage = "Error")
     {
         using var request = new HttpRequestMessage(method, url);
-        ConfigureAuthHeaders(request);
+        await ConfigureAuthHeadersAsync(request);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         if (body != null && (method == HttpMethod.Post || method == HttpMethod.Put || method == HttpMethod.Patch))
@@ -182,7 +195,7 @@ public partial class AzureDevOpsClient
     private async Task SendRequestAsync(string url, HttpMethod method, object? body = null, string errorMessage = "Error")
     {
         using var request = new HttpRequestMessage(method, url);
-        ConfigureAuthHeaders(request);
+        await ConfigureAuthHeadersAsync(request);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         if (body != null && (method == HttpMethod.Post || method == HttpMethod.Put || method == HttpMethod.Patch))
@@ -204,7 +217,7 @@ public partial class AzureDevOpsClient
     private async Task<string?> GetBlobContentAsync(string url)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
-        ConfigureAuthHeaders(request);
+        await ConfigureAuthHeadersAsync(request);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
 
         using var response = await _httpClient.SendAsync(request);

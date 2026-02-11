@@ -57,7 +57,7 @@ public class UrlParsingTests
     private static AzureDevOpsClient CreateClient()
     {
         var settings = Microsoft.Extensions.Options.Options.Create(
-            new Configuration.AzureDevOpsSettings { Pat = "dummy" });
+            new Configuration.AzureDevOpsSettings());
         return new AzureDevOpsClient(new HttpClient(), settings);
     }
 }
