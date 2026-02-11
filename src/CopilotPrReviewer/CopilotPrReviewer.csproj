@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- .NET Tool Configuration -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>copilot-pr-reviewer</ToolCommandName>
+    <PackageId>CopilotPrReviewer</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>DNV</Authors>
+    <Company>DNV</Company>
+    <Description>AI-powered pull request code reviewer for Azure DevOps using GitHub Copilot</Description>
+    <PackageTags>code-review;azure-devops;copilot;ai;pr-review</PackageTags>
+    <PackageProjectUrl>https://github.com/dnv/copilot-pr-reviewer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dnv/copilot-pr-reviewer</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="CopilotPrReviewer.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiffPlex" Version="1.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.3" />
+    <PackageReference Include="SharpToken" Version="2.0.4" />
+    <PackageReference Include="Spectre.Console" Version="0.54.0" />
+    <PackageReference Include="GitHub.Copilot.SDK" Version="0.1.23" />
+    <PackageReference Include="System.CommandLine" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
