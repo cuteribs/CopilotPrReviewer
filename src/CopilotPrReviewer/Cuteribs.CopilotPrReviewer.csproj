@@ -8,11 +8,10 @@
 
     <!-- .NET Tool Configuration -->
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>copilot-pr-reviewer</ToolCommandName>
+    <ToolCommandName>CopilotPrReviewer</ToolCommandName>
     <PackageId>CopilotPrReviewer</PackageId>
     <Version>1.0.0</Version>
-    <Authors>DNV</Authors>
-    <Company>DNV</Company>
+    <Authors>Cuteribs</Authors>
     <Description>AI-powered pull request code reviewer for Azure DevOps using GitHub Copilot</Description>
     <PackageTags>code-review;azure-devops;copilot;ai;pr-review</PackageTags>
     <PackageProjectUrl>https://github.com/dnv/copilot-pr-reviewer</PackageProjectUrl>
@@ -22,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="CopilotPrReviewer.Tests" />
+    <InternalsVisibleTo Include="Cuteribs.CopilotPrReviewer.Tests" />
   </ItemGroup>
 
   <ItemGroup>

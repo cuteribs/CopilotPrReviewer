@@ -1,11 +1,11 @@
-using CopilotPrReviewer.Configuration;
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Configuration;
+using Cuteribs.CopilotPrReviewer.Models;
 using GitHub.Copilot.SDK;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class CopilotReviewService
 {

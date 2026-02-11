@@ -1,4 +1,4 @@
-namespace CopilotPrReviewer.Models;
+namespace Cuteribs.CopilotPrReviewer.Models;
 
 public sealed class ReviewFinding
 {

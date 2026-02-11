@@ -1,6 +1,6 @@
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Models;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class TechStackClassifier
 {

@@ -1,6 +1,6 @@
-using CopilotPrReviewer.Services;
+using Cuteribs.CopilotPrReviewer.Services;
 
-namespace CopilotPrReviewer.Tests;
+namespace Cuteribs.CopilotPrReviewer.Tests;
 
 public class FileExclusionFilterTests
 {

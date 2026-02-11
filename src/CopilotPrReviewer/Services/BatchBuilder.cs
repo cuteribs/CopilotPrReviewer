@@ -1,8 +1,8 @@
-using CopilotPrReviewer.Configuration;
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Configuration;
+using Cuteribs.CopilotPrReviewer.Models;
 using Microsoft.Extensions.Options;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class BatchBuilder
 {

@@ -1,7 +1,7 @@
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Models;
 using Spectre.Console;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class ConsoleReporter
 {

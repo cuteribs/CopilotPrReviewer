@@ -1,7 +1,7 @@
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Models;
 using System.Text.Json;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class FindingParser
 {

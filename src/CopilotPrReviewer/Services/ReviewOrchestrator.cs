@@ -1,10 +1,10 @@
-using CopilotPrReviewer.Configuration;
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Configuration;
+using Cuteribs.CopilotPrReviewer.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class ReviewOrchestrator
 {

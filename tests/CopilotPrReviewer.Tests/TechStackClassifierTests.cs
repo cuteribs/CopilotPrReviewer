@@ -1,7 +1,7 @@
-using CopilotPrReviewer.Models;
-using CopilotPrReviewer.Services;
+using Cuteribs.CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Services;
 
-namespace CopilotPrReviewer.Tests;
+namespace Cuteribs.CopilotPrReviewer.Tests;
 
 public class TechStackClassifierTests
 {

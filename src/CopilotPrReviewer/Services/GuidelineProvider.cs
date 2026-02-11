@@ -1,9 +1,9 @@
-using CopilotPrReviewer.Configuration;
-using CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Configuration;
+using Cuteribs.CopilotPrReviewer.Models;
 using Microsoft.Extensions.Options;
 using System.Reflection;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class GuidelineProvider
 {

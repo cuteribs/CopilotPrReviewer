@@ -1,9 +1,9 @@
-using CopilotPrReviewer.Configuration;
-using CopilotPrReviewer.Models;
-using CopilotPrReviewer.Services;
+using Cuteribs.CopilotPrReviewer.Configuration;
+using Cuteribs.CopilotPrReviewer.Models;
+using Cuteribs.CopilotPrReviewer.Services;
 using Microsoft.Extensions.Options;
 
-namespace CopilotPrReviewer.Tests;
+namespace Cuteribs.CopilotPrReviewer.Tests;
 
 public class BatchBuilderTests
 {

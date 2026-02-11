@@ -1,6 +1,6 @@
 using SharpToken;
 
-namespace CopilotPrReviewer.Services;
+namespace Cuteribs.CopilotPrReviewer.Services;
 
 public sealed class TokenCounter
 {

@@ -1,4 +1,4 @@
-namespace CopilotPrReviewer.Configuration;
+namespace Cuteribs.CopilotPrReviewer.Configuration;
 
 public sealed class CopilotSettings
 {

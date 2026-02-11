@@ -1,4 +1,4 @@
-# CopilotPrReviewer
+# Cuteribs.CopilotPrReviewer
 
 AI-powered pull request code reviewer for Azure DevOps using GitHub Copilot SDK.
 
@@ -25,7 +25,7 @@ Install as a global .NET tool for use anywhere:
 
 ```bash
 # PowerShell / bash
-dotnet tool install -g CopilotPrReviewer
+dotnet tool install -g Cuteribs.CopilotPrReviewer
 ```
 
 Once installed, run from anywhere:
@@ -39,7 +39,7 @@ Run directly without installation (similar to `npx`):
 
 ```bash
 # PowerShell / bash
-dnx CopilotPrReviewer <pr-url> [options]
+dnx Cuteribs.CopilotPrReviewer <pr-url> [options]
 ```
 
 This is useful for:
@@ -73,7 +73,7 @@ export AzureDevOps__Pat="your-ado-pat-token"
 **Creating an Azure DevOps PAT:**
 1. Navigate to https://dev.azure.com/{your-organization}/_usersSettings/tokens
 2. Click "New Token"
-3. Name: `CopilotPrReviewer`
+3. Name: `Cuteribs.CopilotPrReviewer`
 4. Select **Code (Read & Write)** scope
 5. Expiration: Set as needed (90 days recommended)
 6. Click "Create"
@@ -207,7 +207,7 @@ copilot-pr-reviewer <Pull Request URL>
 Or with `dnx` (no installation required):
 
 ```bash
-dnx CopilotPrReviewer <Pull Request URL>
+dnx Cuteribs.CopilotPrReviewer <Pull Request URL>
 ```
 
 For CI/CD (e.g., Azure Pipelines YAML):
@@ -224,7 +224,7 @@ For CI/CD (e.g., Azure Pipelines YAML):
 Or using `dnx` (preferred for CI/CD):
 
 ```yaml
-- script: dnx CopilotPrReviewer $(PR_URL)
+- script: dnx Cuteribs.CopilotPrReviewer $(PR_URL)
   displayName: 'Review PR with AI'
   env:
     AzureDevOps__Pat: $(AZURE_DEVOPS_PAT)
@@ -288,16 +288,16 @@ Both Azure DevOps URL formats are supported:
 
 **Usage:**
 ```bash
-dnx CopilotPrReviewer <pr-url> [options]
+dnx Cuteribs.CopilotPrReviewer <pr-url> [options]
 ```
 
 **Example:**
 ```bash
 # Run directly without installation
-dnx CopilotPrReviewer <Pull Request URL> --no-comments
+dnx Cuteribs.CopilotPrReviewer <Pull Request URL> --no-comments
 
 # In CI/CD (Azure Pipelines)
-- script: dnx CopilotPrReviewer $(PR_URL)
+- script: dnx Cuteribs.CopilotPrReviewer $(PR_URL)
   env:
     AzureDevOps__Pat: $(AZURE_DEVOPS_PAT)
     GITHUB_TOKEN: $(GITHUB_TOKEN)
@@ -359,7 +359,7 @@ Place your custom guideline files in the folder:
     version: '10.x'
 
 - script: |
-    dnx CopilotPrReviewer $(System.PullRequest.SourceRepositoryUri)/pullrequest/$(System.PullRequest.PullRequestId)
+    dnx Cuteribs.CopilotPrReviewer $(System.PullRequest.SourceRepositoryUri)/pullrequest/$(System.PullRequest.PullRequestId)
   displayName: 'Review PR with AI'
   env:
     AzureDevOps__Pat: $(AZURE_DEVOPS_PAT)
@@ -375,7 +375,7 @@ Place your custom guideline files in the folder:
     dotnet-version: '10.0.x'
 
 - name: Review PR
-  run: dnx CopilotPrReviewer ${{ github.event.pull_request.html_url }}
+  run: dnx Cuteribs.CopilotPrReviewer ${{ github.event.pull_request.html_url }}
   env:
     AzureDevOps__Pat: ${{ secrets.AZURE_DEVOPS_PAT }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
