@@ -12,9 +12,9 @@ public sealed class GuidelineProvider
 
 	private static readonly Dictionary<TechStack, string> ResourceNames = new()
 	{
-		[TechStack.Dotnet] = "CopilotPrReviewer.Resources.dotnet-guidelines.md",
-		[TechStack.Frontend] = "CopilotPrReviewer.Resources.frontend-guidelines.md",
-		[TechStack.Python] = "CopilotPrReviewer.Resources.python-guidelines.md",
+		[TechStack.Dotnet] = "Cuteribs.CopilotPrReviewer.Resources.dotnet-guidelines.md",
+		[TechStack.Frontend] = "Cuteribs.CopilotPrReviewer.Resources.frontend-guidelines.md",
+		[TechStack.Python] = "Cuteribs.CopilotPrReviewer.Resources.python-guidelines.md",
 	};
 
 	private static readonly Dictionary<TechStack, string> FileNames = new()

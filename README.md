@@ -85,31 +85,10 @@ The GitHub Copilot SDK requires authentication via GitHub CLI or `GITHUB_TOKEN` 
 
 **Option A: GitHub CLI Authentication (Recommended)**
 
-Install GitHub CLI:
+Install GitHub CLI (has to be installed via npm):
 
-**Windows (PowerShell with Chocolatey):**
-```powershell
-choco install gh
-```
-
-**Windows (with WinGet):**
-```powershell
-winget install GitHub.cli
-```
-
-**macOS:**
 ```bash
-brew install gh
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt install gh
-```
-
-Then authenticate:
-```bash
-gh auth login
+npm install -g @github/copilot
 ```
 
 Follow the prompts:
@@ -392,8 +371,6 @@ Set the `AzureDevOps__Pat` environment variable or provide it via `--pat` argume
 Install and authenticate with GitHub CLI:
 ```bash
 # Install GitHub CLI
-winget install GitHub.Copilot       # Windows
-brew install copilot-cli            # macOS
 npm install -g @github/copilot
 ```
 
