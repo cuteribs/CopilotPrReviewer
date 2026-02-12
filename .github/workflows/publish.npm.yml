@@ -26,6 +26,7 @@ jobs:
 
       - name: Build
         run: |
+          cd nodejs
           npm version ${{ github.event.inputs.version }}
           npm install
           npm run build
@@ -37,9 +38,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: npm-package
-          path: tar/
+          path: nodejs/tar/
 
       - name: Publish to NPM
         run: |
-          cd tar
+          cd nodejs/tar
           npm publish *.tgz

@@ -26,6 +26,7 @@ jobs:
         env:
           BUILD_VERSION: ${{ github.event.inputs.version }}
         run: |
+          cd dotnet/CopilotPrReviewer
           dotnet pack \
             -c Release \
             -o ${{ env.NUGET_OUTPUT }} \
@@ -37,10 +38,11 @@ jobs:
           name: ${{ github.event.inputs.version }}
           if-no-files-found: error
           retention-days: 7
-          path: ${{ env.NUGET_OUTPUT }}/*.nupkg
+          path: dotnet/CopilotPrReviewer/${{ env.NUGET_OUTPUT }}/*.nupkg
 
       - name: Publish to NuGet
         run: |
+          cd dotnet/CopilotPrReviewer
           dotnet nuget push \
             --skip-duplicate ${{ env.NUGET_OUTPUT }}/*.nupkg \
             --api-key ${{ secrets.NUGET_API_KEY }} \
