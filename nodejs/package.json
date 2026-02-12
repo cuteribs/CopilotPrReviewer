@@ -1,0 +1,35 @@
+{
+  "name": "copilot-pr-reviewer",
+  "version": "0.2.0",
+  "description": "AI-powered pull request code reviewer for Azure DevOps using GitHub Copilot SDK",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "copilot-pr-reviewer": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "keywords": [
+    "code-review",
+    "azure-devops",
+    "copilot",
+    "ai",
+    "pr-review"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@github/copilot-sdk": "0.1.23",
+    "commander": "14.0.3",
+    "diff": "8.0.3",
+    "gpt-tokenizer": "3.4.0"
+  },
+  "devDependencies": {
+    "@types/diff": "8.0.0",
+    "@types/node": "25.2.3",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  }
+}
