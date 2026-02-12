@@ -20,24 +20,6 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ---
 
-## Output Format
-
-Report findings in PR comment style with file and line references:
-
-`````
-**[EMOJI] [SEVERITY]** `file/path/ClassName.cs:42`
-
-Concise description of the issue.
-
-Concise **explanation** of why this is an issue and its impact.
-
-```suggestion
-[RESPECT ORIGIN INDENT] public record OrderUpdateEvent(Guid OrderId, string UpdateType, DateTime Timestamp);
-```
-`````
-
----
-
 ## Table of Contents
 
 1. [Security Review](#1-security-review)

@@ -37,7 +37,7 @@ Use these guidelines when reviewing JavaScript, TypeScript, React, HTML, and CSS
 - **Insecure URLs**: Check for `http://` usage where `https://` is required
 - **innerHTML Assignment**: Use `textContent` instead of `innerHTML` for text
 
-### High Issues
+### Major Issues
 - **Missing Input Validation**: Validate user inputs on frontend (and backend)
 - **Exposed Sensitive Data**: Don't log or display sensitive information
 - **CORS Issues**: Verify proper CORS configuration for API calls
@@ -136,7 +136,7 @@ Use these guidelines when reviewing JavaScript, TypeScript, React, HTML, and CSS
 - **Form Labels**: All form inputs need associated labels
 - **Semantic HTML**: Use proper elements (button, nav, main, etc.)
 
-### High
+### Major
 - **Keyboard Navigation**: Interactive elements must be keyboard accessible
 - **Focus Management**: Proper focus handling for modals/dialogs
 - **Color Contrast**: Verify sufficient color contrast ratios

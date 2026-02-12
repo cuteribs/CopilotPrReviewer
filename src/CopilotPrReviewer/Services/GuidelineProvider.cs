@@ -8,7 +8,9 @@ namespace Cuteribs.CopilotPrReviewer.Services;
 public sealed class GuidelineProvider
 {
 	private readonly ReviewSettings _settings;
-	private readonly Dictionary<TechStack, string> _cache = new();
+	private readonly Dictionary<TechStack, string> _cache = [];
+
+	private static readonly string ReviewOutputFormatName = "Cuteribs.CopilotPrReviewer.Resources.review-output-format.md";
 
 	private static readonly Dictionary<TechStack, string> ResourceNames = new()
 	{
@@ -42,6 +44,11 @@ public sealed class GuidelineProvider
 		return content;
 	}
 
+	public static string GetReviewOutputFormat()
+	{
+		return LoadFromEmbeddedResource(ReviewOutputFormatName) ?? "!!MISSING OUTPUT FORMAT!!";
+	}
+
 	private string? LoadFromExternalPath(TechStack techStack)
 	{
 		if (string.IsNullOrEmpty(_settings.GuidelinesPath))
@@ -59,8 +66,14 @@ public sealed class GuidelineProvider
 		if (!ResourceNames.TryGetValue(techStack, out var resourceName))
 			return null;
 
+		return LoadFromEmbeddedResource(resourceName);
+	}
+
+	private static string? LoadFromEmbeddedResource(string resourceName)
+	{
 		var assembly = Assembly.GetExecutingAssembly();
 		using var stream = assembly.GetManifestResourceStream(resourceName);
+
 		if (stream == null) return null;
 
 		using var reader = new StreamReader(stream);

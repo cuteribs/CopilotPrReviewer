@@ -54,7 +54,7 @@ Use these guidelines when reviewing Python code.
       raise ValueError("Invalid path")
   ```
 
-### High Issues
+### Major Issues
 - **Insecure Random**: Use `secrets` module for security-sensitive randomness
 - **XML Parsing**: Disable external entities (use `defusedxml`)
 - **YAML Loading**: Use `yaml.safe_load()` instead of `yaml.load()`

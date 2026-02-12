@@ -83,11 +83,9 @@ public partial class AzureDevOpsClient
         var baseUrl = GetBaseUrl(prInfo);
         var threadUrl = $"{baseUrl}/pullRequests/{prInfo.PullRequestId}/threads?api-version={ApiVersion}";
 
-        var commentContent = FormatCommentWithSeverity(options.CommentText, options.Severity);
-
         var thread = new PrThread
         {
-            Comments = [new PrComment { Content = commentContent }],
+            Comments = [new PrComment { Content = options.CommentText }],
             ThreadContext = new ThreadContext
             {
                 FilePath = options.FilePath,

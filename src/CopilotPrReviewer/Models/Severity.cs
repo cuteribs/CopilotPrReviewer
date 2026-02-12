@@ -3,7 +3,6 @@ namespace Cuteribs.CopilotPrReviewer.Models;
 public enum Severity
 {
     Critical,
-    High,
-    Medium,
-    Low
+    Major,
+    Minor
 }

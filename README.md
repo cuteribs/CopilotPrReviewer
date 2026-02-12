@@ -356,10 +356,11 @@ Place your custom guideline files in the folder:
 
 ## Finding Severity Levels
 
-- **Critical**: Security vulnerabilities, data loss risks, production crashes
-- **High**: Performance issues, correctness problems, significant best practice violations
-- **Medium**: Code quality concerns, maintainability issues
-- **Low**: Style issues, minor optimizations, documentation gaps
+| Severity | Description | Action Required |
+|----------|-------------|-----------------|
+| **🔴 Critical** | Security vulnerabilities, data loss risks, production crashes, blocking bugs | Must fix before merge |
+| **🟠 Major** | Performance issues, code correctness problems, maintainability concerns, significant best practice violations | Should fix before merge |
+| **🟡 Minor** | Code style issues, minor optimizations, documentation gaps, suggestions for improvement | Can fix in follow-up PR |
 
 ## CI/CD Integration
 

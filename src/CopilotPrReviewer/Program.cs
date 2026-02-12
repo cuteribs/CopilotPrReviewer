@@ -4,6 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.CommandLine;
+using System.Text;
+
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 
 var prUrlArg = new Argument<string>("--pr-url") { Description = "The URL of the pull request to review" };
 var patOption = new Option<string?>("--pat") { Description = "Azure DevOps personal access token" };

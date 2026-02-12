@@ -13,7 +13,6 @@ public sealed class ReviewSummary
     public required TimeSpan Duration { get; init; }
 
     public int CriticalCount => Findings.Count(f => f.Severity.Equals("Critical", StringComparison.OrdinalIgnoreCase));
-    public int HighCount => Findings.Count(f => f.Severity.Equals("High", StringComparison.OrdinalIgnoreCase));
-    public int MediumCount => Findings.Count(f => f.Severity.Equals("Medium", StringComparison.OrdinalIgnoreCase));
-    public int LowCount => Findings.Count(f => f.Severity.Equals("Low", StringComparison.OrdinalIgnoreCase));
+    public int MajorCount => Findings.Count(f => f.Severity.Equals("Major", StringComparison.OrdinalIgnoreCase));
+    public int MinorCount => Findings.Count(f => f.Severity.Equals("Minor", StringComparison.OrdinalIgnoreCase));
 }

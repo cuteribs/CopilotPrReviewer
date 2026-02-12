@@ -41,20 +41,18 @@ public sealed class ConsoleReporter
 
             if (summary.CriticalCount > 0)
                 severityTable.AddRow("[bold red]Critical[/]", summary.CriticalCount.ToString());
-            if (summary.HighCount > 0)
-                severityTable.AddRow("[bold orange1]High[/]", summary.HighCount.ToString());
-            if (summary.MediumCount > 0)
-                severityTable.AddRow("[bold yellow]Medium[/]", summary.MediumCount.ToString());
-            if (summary.LowCount > 0)
-                severityTable.AddRow("[bold green]Low[/]", summary.LowCount.ToString());
+            if (summary.MajorCount > 0)
+                severityTable.AddRow("[bold orange1]Major[/]", summary.MajorCount.ToString());
+            if (summary.MinorCount > 0)
+                severityTable.AddRow("[bold yellow]Minor[/]", summary.MinorCount.ToString());
 
             AnsiConsole.Write(severityTable);
             AnsiConsole.WriteLine();
 
-            // Top findings (Critical + High)
-            var topFindings = summary.Findings
+			// Top findings (Critical + Major)
+			var topFindings = summary.Findings
                 .Where(f => f.Severity.Equals("Critical", StringComparison.OrdinalIgnoreCase)
-                         || f.Severity.Equals("High", StringComparison.OrdinalIgnoreCase))
+                         || f.Severity.Equals("Major", StringComparison.OrdinalIgnoreCase))
                 .Take(10)
                 .ToList();
 
@@ -62,7 +60,7 @@ public sealed class ConsoleReporter
             {
                 var findingsTable = new Table()
                     .Border(TableBorder.Rounded)
-                    .Title("[bold]Top Critical/High Findings[/]")
+                    .Title("[bold]Top Critical/Major Findings[/]")
                     .AddColumn("Severity")
                     .AddColumn("File")
                     .AddColumn("Line")

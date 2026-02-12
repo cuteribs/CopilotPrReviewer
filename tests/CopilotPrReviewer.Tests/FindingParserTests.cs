@@ -1,10 +1,11 @@
 using Cuteribs.CopilotPrReviewer.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Cuteribs.CopilotPrReviewer.Tests;
 
 public class FindingParserTests
 {
-    private readonly FindingParser _parser = new();
+    private readonly FindingParser _parser = new(NullLogger.Instance);
 
     [Fact]
     public void Parse_ValidJsonArray_ReturnsFindings()
@@ -14,7 +15,7 @@ public class FindingParserTests
           {
             "filePath": "/src/Service.cs",
             "lineNumber": 42,
-            "severity": "High",
+            "severity": "Major",
             "description": "Missing null check",
             "suggestion": "Add null guard"
           }
@@ -26,7 +27,7 @@ public class FindingParserTests
         Assert.Single(findings);
         Assert.Equal("/src/Service.cs", findings[0].FilePath);
         Assert.Equal(42, findings[0].LineNumber);
-        Assert.Equal("High", findings[0].Severity);
+        Assert.Equal("Major", findings[0].Severity);
         Assert.Equal("Missing null check", findings[0].Description);
         Assert.Equal("Add null guard", findings[0].Suggestion);
     }
@@ -83,8 +84,8 @@ public class FindingParserTests
     {
         var json = """
         [
-          { "filePath": "/a.cs", "lineNumber": 1, "severity": "High", "description": "Issue 1" },
-          { "filePath": "/b.cs", "lineNumber": 2, "severity": "Low", "description": "Issue 2" }
+          { "filePath": "/a.cs", "lineNumber": 1, "severity": "Major", "description": "Issue 1" },
+          { "filePath": "/b.cs", "lineNumber": 2, "severity": "Minor", "description": "Issue 2" }
         ]
         """;
 

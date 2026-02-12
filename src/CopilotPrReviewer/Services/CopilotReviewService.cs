@@ -49,12 +49,16 @@ public sealed class CopilotReviewService
 			{
 				done.TrySetResult();
 			}
-			else if(ev is SessionErrorEvent err)
+			else if (ev is ToolExecutionStartEvent execStart)
+			{
+				_logger.LogWarning(execStart.Data.ToolName);
+			}
+			else if (ev is SessionErrorEvent err)
 			{
 				throw new InvalidOperationException(err.Data.Message);
 			}
 
-			_logger.LogInformation("{EventType}: {Json}", ev.GetType().Name, ev.ToJson());
+			_logger.LogInformation("==== {EventType} ====", ev.GetType().Name);
 		});
 
 		await session.SendAndWaitAsync(new MessageOptions { Prompt = prompt }, TimeSpan.FromSeconds(_settings.TimeoutSeconds));
@@ -63,7 +67,7 @@ public sealed class CopilotReviewService
 		var response = responseBuilder.ToString();
 		_logger.LogDebug("Batch {BatchNumber} response length: {Length}", batch.BatchNumber, response.Length);
 
-		var parser = new FindingParser();
+		var parser = new FindingParser(_logger);
 		return parser.Parse(response);
 	}
 
@@ -113,33 +117,8 @@ public sealed class CopilotReviewService
 		}
 
 		// Output format instruction (converted to a single raw string literal)
-		sb.AppendLine(
-"""
-## Output Format
-
-Respond with a JSON array of findings. Each finding must have:
-- `filePath`: the file path
-- `lineNumber`: the line number (use 1 if unknown)
-- `severity`: one of "Critical", "High", "Medium", "Low"
-- `description`: concise description of the issue
-- `suggestion`: optional code only suggestion to fix the issue, respect the original indentation
-
-```json
-[
-  {
-    "filePath": "/src/Example.cs",
-    "lineNumber": 42,
-    "severity": "High",
-    "description": "Description of the issue",
-    "suggestion": "Suggested fix"
-  }
-]
-```
-
-Only report actual issues found in the code changes. Focus on the diff (changed lines).
-If there are no issues, return an empty JSON array: `[]`
-"""
-		);
+		var outputFormat = GuidelineProvider.GetReviewOutputFormat();
+		sb.AppendLine(outputFormat);
 
 		return sb.ToString();
 	}
