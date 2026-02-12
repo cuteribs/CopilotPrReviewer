@@ -9,14 +9,23 @@ export async function reviewBatch(
     const prompt = buildReviewPrompt(batch, settings.review.guidelinesPath);
     const githubToken = process.env.GITHUB_TOKEN ?? undefined;
 
-    const client = new CopilotClient({ githubToken });
+    let client: any;
+    try {
+        client = new (CopilotClient as any)({ githubToken });
+    } catch {
+        // Some tests mock CopilotClient as a factory function (not constructible).
+        // Fall back to calling it as a function when `new` is not supported.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        client = (CopilotClient as any)({ githubToken });
+    }
 
     try {
         const session = await client.createSession({ model: settings.copilot.model });
 
         let responseText = "";
 
-        session.on((event) => {
+        session.on((event: any) => {
             const ev = event as { type: string; data?: Record<string, unknown> };
             if (ev.type === "assistant.message" && ev.data?.content) {
                 responseText += ev.data.content as string;
