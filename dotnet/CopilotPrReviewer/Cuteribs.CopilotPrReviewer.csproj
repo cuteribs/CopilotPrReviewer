@@ -27,6 +27,7 @@
 		<ItemGroup>
 			<ResouceFiles Include="$(ProjectDir)..\..\resources\*.*" />
 		</ItemGroup>
+		<MakeDir Directories="$(ProjectDir)Resources"  />
 		<Copy SourceFiles="$(ProjectDir)..\..\LICENSE" DestinationFolder="$(ProjectDir)" />
 		<Copy SourceFiles="@(ResouceFiles)" DestinationFolder="$(ProjectDir)Resources\" />
 	</Target>
