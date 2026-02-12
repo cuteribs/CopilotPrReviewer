@@ -16,7 +16,8 @@ public sealed class CopilotReviewService
 	public CopilotReviewService(
 		IOptions<CopilotSettings> settings,
 		GuidelineProvider guidelineProvider,
-		ILogger<CopilotReviewService> logger)
+		ILogger<CopilotReviewService> logger
+	)
 	{
 		_settings = settings.Value;
 		_guidelineProvider = guidelineProvider;
@@ -27,7 +28,7 @@ public sealed class CopilotReviewService
 	{
 		var prompt = BuildReviewPrompt(batch);
 
-		await using var client = new CopilotClient();
+		await using var client = new CopilotClient(new() { GithubToken = GetGithubToken() });
 		await client.StartAsync();
 
 		await using var session = await client.CreateSessionAsync(new SessionConfig
@@ -141,5 +142,11 @@ If there are no issues, return an empty JSON array: `[]`
 		);
 
 		return sb.ToString();
+	}
+
+	private static string? GetGithubToken()
+	{
+		var token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+		return token;
 	}
 }

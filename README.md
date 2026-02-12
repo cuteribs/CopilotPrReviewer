@@ -259,6 +259,9 @@ CopilotPrReviewer <Pull Request URL> --max-parallel 8
 
 # Custom timeout
 CopilotPrReviewer <Pull Request URL> --timeout 120
+
+# GitHub token for Copilot authentication
+CopilotPrReviewer <Pull Request URL> --github-token "github_pat_your-github-token"
 ```
 
 ### Full Command Options
@@ -269,10 +272,11 @@ Options:
   --pat <pat>                          Azure DevOps personal access token (optional)
   --auth-type <auth-type>              Authentication type: 'pat', 'oauth' (default: auto-detect)
   --model <model>                      AI model to use for review (default: gpt-5-mini)
+  --github-token <github-token>        GitHub token for Copilot authentication (optional)
   --guidelines-path <guidelines-path>  Path to external guidelines folder
   --max-parallel <max-parallel>        Maximum parallel batch reviews (default: 4)
   --no-comments                        Skip posting comments to PR (dry run)
-  --timeout                            Timeout for the review process (in seconds, default: 300)
+  --timeout <timeout>                  Timeout for the review process (in seconds, default: 300)
   --version                            Show version information
   -?, -h, --help                       Show help and usage information
 ```

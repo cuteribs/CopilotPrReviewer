@@ -10,6 +10,7 @@ var patOption = new Option<string?>("--pat") { Description = "Azure DevOps perso
 var authTypeOption = new Option<string?>("--auth-type") { Description = "Authentication type: 'pat', 'oauth' (default: auto-detect)" };
 var modelOption = new Option<string?>("--model") { Description = "AI model to use for review" };
 var timeoutOption = new Option<int?>("--timeout") { Description = "Timeout for the review process (in seconds, default: 300)" };
+var githubTokenOption = new Option<string?>("--github-token") { Description = "GitHub token for Copilot authentication" };
 var guidelinesPathOption = new Option<string?>("--guidelines-path") { Description = "Path to external guidelines folder" };
 var maxParallelOption = new Option<int?>("--max-parallel") { Description = "Maximum parallel batch reviews" };
 var noCommentsOption = new Option<bool>("--no-comments") { Description = "Skip posting comments to PR", DefaultValueFactory = _ => false };
@@ -21,6 +22,7 @@ var rootCommand = new RootCommand("CopilotPrReviewer - AI-powered PR code review
 	authTypeOption,
 	modelOption,
 	timeoutOption,
+	githubTokenOption,
 	guidelinesPathOption,
 	maxParallelOption,
 	noCommentsOption
@@ -33,6 +35,7 @@ rootCommand.SetAction(async parseResult =>
 	var authType = parseResult.GetValue(authTypeOption);
 	var model = parseResult.GetValue(modelOption);
 	var timeout = parseResult.GetValue(timeoutOption);
+	var githubToken = parseResult.GetValue(githubTokenOption);
 	var guidelinesPath = parseResult.GetValue(guidelinesPathOption);
 	var maxParallel = parseResult.GetValue(maxParallelOption);
 	var noComments = parseResult.GetValue(noCommentsOption);
@@ -40,6 +43,10 @@ rootCommand.SetAction(async parseResult =>
 	// Set PAT from CLI argument to environment variable for authenticator to use
 	if (!string.IsNullOrEmpty(pat))
 		Environment.SetEnvironmentVariable("AZURE_DEVOPS_PAT", pat);
+
+	// Set GitHub token from CLI argument to environment variable for Copilot client to use
+	if (!string.IsNullOrEmpty(githubToken))
+		Environment.SetEnvironmentVariable("GITHUB_TOKEN", githubToken);
 
 	// Build configuration: appsettings.json < env vars < CLI args
 	var configBuilder = new ConfigurationBuilder()
