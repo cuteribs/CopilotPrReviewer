@@ -1,0 +1,45 @@
+name: Publish to NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+
+env:
+  NUGET_OUTPUT: Artifacts/NuGet
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm version ${{ github.event.inputs.version }}
+          npm install
+          npm run build
+          npm pack
+          mkdir tar
+          mv *.tgz tar/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: tar/
+
+      - name: Publish to NPM
+        run: |
+          cd tar
+          npm publish *.tgz

@@ -8,9 +8,14 @@
     "copilot-pr-reviewer": "dist/index.js"
   },
   "scripts": {
+    "prebuild": "node ./scripts/prebuild.js",
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "prepublishOnly": "npm run build && npm test -- --run"
   },
   "keywords": [
     "code-review",
@@ -20,6 +25,24 @@
     "pr-review"
   ],
   "license": "MIT",
+  "author": "Cuteribs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cuteribs/CopilotPrReviewer.git"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "files": [
+    "dist",
+    "resources",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@github/copilot-sdk": "0.1.23",
     "commander": "14.0.3",
@@ -29,7 +52,10 @@
   "devDependencies": {
     "@types/diff": "8.0.0",
     "@types/node": "25.2.3",
+    "@vitest/coverage-v8": "^2.0.0",
+    "@vitest/ui": "^2.0.0",
     "tsx": "4.21.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^2.0.0"
   }
 }

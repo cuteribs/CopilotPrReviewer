@@ -1,0 +1,43 @@
+# Exclude source files
+src/
+tests/
+*.test.ts
+*.spec.ts
+
+# Config files
+tsconfig.json
+vitest.config.ts
+.eslintrc*
+.prettierrc*
+
+# Development files
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# Documentation (keep root README.md)
+docs/
+*.md
+!README.md
+
+# Misc
+.DS_Store
+node_modules/
+*.tgz
+.env
+.env.*

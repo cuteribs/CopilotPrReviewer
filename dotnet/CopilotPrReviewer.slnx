@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="src/CopilotPrReviewer/Cuteribs.CopilotPrReviewer.csproj" />
-  <Project Path="tests/CopilotPrReviewer.Tests/Cuteribs.CopilotPrReviewer.Tests.csproj" />
+  <Project Path="CopilotPrReviewer/Cuteribs.CopilotPrReviewer.csproj" />
+  <Project Path="CopilotPrReviewer.Tests/Cuteribs.CopilotPrReviewer.Tests.csproj" />
 </Solution>

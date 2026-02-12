@@ -1,0 +1,57 @@
+{
+  "assistantMessages": {
+    "dotnetReview": "```json\n[\n  {\n    \"severity\": \"Critical\",\n    \"filePath\": \"src/product/Repository.cs\",\n    \"lineNumber\": 43,\n    \"description\": \"SQL injection vulnerability: User input is directly concatenated into SQL query without parameterization.\",\n    \"suggestion\": \"var command = connection.CreateCommand();\\ncommand.CommandText = \\\"SELECT * FROM Item WHERE Id = @Id\\\";\\ncommand.Parameters.AddWithValue(\\\"@Id\\\", id);\"\n  },\n  {\n    \"severity\": \"Major\",\n    \"filePath\": \"src/product/Program.cs\",\n    \"lineNumber\": 23,\n    \"description\": \"Converting the route Guid to a string before passing it into the repository loses type safety.\",\n    \"suggestion\": \"app.MapGet(\\\"{id:guid}\\\", (Repository repository, Guid id) => repository.Get(id));\"\n  },\n  {\n    \"severity\": \"Minor\",\n    \"filePath\": \"src/Models/Product.cs\",\n    \"lineNumber\": 12,\n    \"description\": \"Property should be read-only. Initialize in constructor instead.\",\n    \"suggestion\": \"public string Name { get; init; }\"\n  }\n]\n```",
+    "frontendReview": "```json\n[\n  {\n    \"severity\": \"Critical\",\n    \"filePath\": \"src/components/LoginForm.tsx\",\n    \"lineNumber\": 23,\n    \"description\": \"Password is logged to console. This is a serious security issue.\",\n    \"suggestion\": \"Remove console.log statement or log sanitized data only.\"\n  },\n  {\n    \"severity\": \"Major\",\n    \"filePath\": \"src/hooks/useAuth.ts\",\n    \"lineNumber\": 56,\n    \"description\": \"Missing dependency in useEffect hook. This can cause stale closures.\",\n    \"suggestion\": \"useEffect(() => {\\n  // ...\\n}, [user, token]); // Add missing dependencies\"\n  }\n]\n```",
+    "pythonReview": "```json\n[\n  {\n    \"severity\": \"Major\",\n    \"filePath\": \"src/services/data_processor.py\",\n    \"lineNumber\": 89,\n    \"description\": \"Bare except clause catches all exceptions including SystemExit and KeyboardInterrupt.\",\n    \"suggestion\": \"except Exception as e:\\n    logger.error(f\\\"Processing failed: {e}\\\")\\n    raise\"\n  }\n]\n```",
+    "emptyReview": "```json\n[]\n```",
+    "malformedResponse": "I found some issues in the code:\n- Line 45 has a problem\n- Consider refactoring the function",
+    "partialJson": "Here are the findings:\n```json\n[\n  {\n    \"severity\": \"Major\",\n    \"filePath\": \"src/test.ts\",\n    \"lineNumber\": 10,\n    \"description\": \"Missing error handling\"\n  }\n]",
+    "noJsonBlock": "[\n  {\n    \"severity\": \"Critical\",\n    \"filePath\": \"src/security.ts\",\n    \"lineNumber\": 55,\n    \"description\": \"Hardcoded credentials detected\",\n    \"suggestion\": \"Use environment variables\"\n  }\n]"
+  },
+  "samplePrInfo": {
+    "organization": "test-org",
+    "project": "test-project",
+    "repository": "test-repo",
+    "pullRequestId": 12345
+  },
+  "samplePrDetails": {
+    "pullRequestId": 12345,
+    "title": "Add user authentication feature",
+    "description": "Implements OAuth2 authentication flow",
+    "status": "active",
+    "mergeStatus": "succeeded",
+    "sourceRefName": "refs/heads/feature/auth",
+    "targetRefName": "refs/heads/main",
+    "creationDate": "2026-02-10T10:30:00Z",
+    "createdBy": {
+      "displayName": "John Doe",
+      "uniqueName": "john.doe@example.com"
+    }
+  },
+  "sampleFilePatches": [
+    {
+      "filePath": "src/auth/AuthService.cs",
+      "newContent": "using System;\nusing System.Threading.Tasks;\n\npublic class AuthService\n{\n    public async Task<User> AuthenticateAsync(string email, string password)\n    {\n        return null;\n    }\n}",
+      "patch": "@@ -0,0 +1,9 @@\n+using System;\n+using System.Threading.Tasks;\n+\n+public class AuthService\n+{\n+    public async Task<User> AuthenticateAsync(string email, string password)\n+    {\n+        return null;\n+    }\n+}",
+      "changeType": "add",
+      "linesAdded": 9,
+      "linesDeleted": 0
+    },
+    {
+      "filePath": "src/components/LoginForm.tsx",
+      "newContent": "import React, { useState } from 'react';\n\nexport const LoginForm: React.FC = () => {\n  const [email, setEmail] = useState('');\n  const [password, setPassword] = useState('');\n\n  const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault();\n    console.log(password);\n  };\n\n  return <form onSubmit={handleSubmit}></form>;\n};",
+      "patch": "@@ -0,0 +1,13 @@\n+import React, { useState } from 'react';\n+\n+export const LoginForm: React.FC = () => {\n+  const [email, setEmail] = useState('');\n+  const [password, setPassword] = useState('');\n+\n+  const handleSubmit = async (e: React.FormEvent) => {\n+    e.preventDefault();\n+    console.log(password);\n+  };\n+\n+  return <form onSubmit={handleSubmit}></form>;\n+};",
+      "changeType": "add",
+      "linesAdded": 13,
+      "linesDeleted": 0
+    },
+    {
+      "filePath": "package-lock.json",
+      "newContent": "{ \"lockfileVersion\": 2 }",
+      "patch": "@@ -0,0 +1 @@\n+{ \"lockfileVersion\": 2 }",
+      "changeType": "add",
+      "linesAdded": 1,
+      "linesDeleted": 0
+    }
+  ]
+}

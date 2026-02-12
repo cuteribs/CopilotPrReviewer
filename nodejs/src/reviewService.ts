@@ -32,6 +32,7 @@ export async function reviewBatch(
 
         await session.destroy();
 
+            console.warn(responseText);
         return parseFindings(responseText);
     } finally {
         await client.stop();

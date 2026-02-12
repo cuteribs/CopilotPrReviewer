@@ -3,10 +3,12 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
-		<RuntimeIdentifiers>win-x64;linux-x64;osx-x64;win-arm64;linux-arm64;osx-arm64</RuntimeIdentifiers>
+		<RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
+	<PropertyGroup>
 		<!-- .NET Tool Configuration -->
 		<PackAsTool>true</PackAsTool>
 		<ToolCommandName>CopilotPrReviewer</ToolCommandName>
@@ -15,11 +17,19 @@
 		<Authors>Cuteribs</Authors>
 		<Description>AI-powered pull request code reviewer for Azure DevOps using GitHub Copilot</Description>
 		<PackageTags>code-review;azure-devops;copilot;ai;pr-review</PackageTags>
-		<PackageProjectUrl>https://github.com/dnv/copilot-pr-reviewer</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/dnv/copilot-pr-reviewer</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/cuteribs/CopilotPrReviewer</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/cuteribs/CopilotPrReviewer</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
+
+	<Target Name="PreBuild" BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<ResouceFiles Include="$(ProjectDir)..\..\resources\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="$(ProjectDir)..\..\LICENSE" DestinationFolder="$(ProjectDir)" />
+		<Copy SourceFiles="@(ResouceFiles)" DestinationFolder="$(ProjectDir)Resources\" />
+	</Target>
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="Cuteribs.CopilotPrReviewer.Tests" />
