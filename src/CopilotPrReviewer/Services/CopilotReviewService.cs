@@ -53,6 +53,8 @@ public sealed class CopilotReviewService
 			{
 				throw new InvalidOperationException(err.Data.Message);
 			}
+
+			_logger.LogInformation("{EventType}: {Json}", ev.GetType().Name, ev.ToJson());
 		});
 
 		await session.SendAndWaitAsync(new MessageOptions { Prompt = prompt }, TimeSpan.FromSeconds(_settings.TimeoutSeconds));
@@ -75,14 +77,12 @@ public sealed class CopilotReviewService
 		// Add guidelines for the tech stack
 		var guidelines = _guidelineProvider.GetGuidelines(batch.TechStack);
 
-		if (string.IsNullOrEmpty(guidelines))
+		if (!string.IsNullOrEmpty(guidelines))
 		{
-			throw new InvalidOperationException($"No guidelines found for tech stack: {batch.TechStack}");
+			sb.AppendLine("## Review Guidelines");
+			sb.AppendLine(guidelines);
+			sb.AppendLine();
 		}
-
-		sb.AppendLine("## Review Guidelines");
-		sb.AppendLine(guidelines);
-		sb.AppendLine();
 
 		// Add files to review
 		sb.AppendLine("## Files to Review");
