@@ -44,4 +44,4 @@ jobs:
       - name: Publish to NPM
         run: |
           cd nodejs/tar
-          npm publish *.tgz --public
+          npm publish *.tgz --access public
