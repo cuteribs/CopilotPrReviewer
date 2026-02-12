@@ -8,4 +8,5 @@ public sealed class CopilotSettings
     public int MaxTokensPerBatch { get; init; } = 90_000;
     public int OverheadTokens { get; init; } = 20_000;
     public int MaxParallelBatches { get; init; } = 4;
+    public int TimeoutSeconds { get; init; } = 300;
 }

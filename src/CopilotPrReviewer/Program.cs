@@ -9,6 +9,7 @@ var prUrlArg = new Argument<string>("--pr-url") { Description = "The URL of the 
 var patOption = new Option<string?>("--pat") { Description = "Azure DevOps personal access token" };
 var authTypeOption = new Option<string?>("--auth-type") { Description = "Authentication type: 'pat', 'oauth' (default: auto-detect)" };
 var modelOption = new Option<string?>("--model") { Description = "AI model to use for review" };
+var timeoutOption = new Option<int?>("--timeout") { Description = "Timeout for the review process (in seconds, default: 300)" };
 var guidelinesPathOption = new Option<string?>("--guidelines-path") { Description = "Path to external guidelines folder" };
 var maxParallelOption = new Option<int?>("--max-parallel") { Description = "Maximum parallel batch reviews" };
 var noCommentsOption = new Option<bool>("--no-comments") { Description = "Skip posting comments to PR", DefaultValueFactory = _ => false };
@@ -19,6 +20,7 @@ var rootCommand = new RootCommand("CopilotPrReviewer - AI-powered PR code review
 	patOption,
 	authTypeOption,
 	modelOption,
+	timeoutOption,
 	guidelinesPathOption,
 	maxParallelOption,
 	noCommentsOption
@@ -30,6 +32,7 @@ rootCommand.SetAction(async parseResult =>
 	var pat = parseResult.GetValue(patOption);
 	var authType = parseResult.GetValue(authTypeOption);
 	var model = parseResult.GetValue(modelOption);
+	var timeout = parseResult.GetValue(timeoutOption);
 	var guidelinesPath = parseResult.GetValue(guidelinesPathOption);
 	var maxParallel = parseResult.GetValue(maxParallelOption);
 	var noComments = parseResult.GetValue(noCommentsOption);
@@ -52,6 +55,9 @@ rootCommand.SetAction(async parseResult =>
 
 	if (!string.IsNullOrEmpty(model))
 		cliOverrides[$"{CopilotSettings.SectionName}:Model"] = model;
+
+	if (timeout.HasValue)
+		cliOverrides[$"{CopilotSettings.SectionName}:TimeoutSeconds"] = timeout.Value.ToString();
 
 	if (!string.IsNullOrEmpty(guidelinesPath))
 		cliOverrides[$"{ReviewSettings.SectionName}:GuidelinesPath"] = guidelinesPath;

@@ -38,15 +38,23 @@ public sealed class CopilotReviewService
 		var responseBuilder = new StringBuilder();
 		var done = new TaskCompletionSource();
 
-		session.On(evt =>
+		session.On(ev =>
 		{
-			if (evt is AssistantMessageEvent msg)
+			if (ev is AssistantMessageEvent msg)
+			{
 				responseBuilder.Append(msg.Data.Content);
-			else if (evt is SessionIdleEvent)
+			}
+			else if (ev is SessionIdleEvent)
+			{
 				done.TrySetResult();
+			}
+			else if(ev is SessionErrorEvent err)
+			{
+				throw new InvalidOperationException(err.Data.Message);
+			}
 		});
 
-		await session.SendAsync(new MessageOptions { Prompt = prompt });
+		await session.SendAndWaitAsync(new MessageOptions { Prompt = prompt }, TimeSpan.FromSeconds(_settings.TimeoutSeconds));
 		await done.Task;
 
 		var response = responseBuilder.ToString();
