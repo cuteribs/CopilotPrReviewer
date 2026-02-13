@@ -189,14 +189,25 @@ describe("batchBuilder", () => {
             }
         });
 
-        it("should include both content and diff in batches", () => {
+        it("should include both content and diff in batches when extendReview is true", () => {
             const filePatches: FilePatch[] = mockData.sampleFilePatches;
-            const result = createBatches(filePatches, mockSettings);
+            const result = createBatches(filePatches, mockSettings, true);
 
             const firstBatch = result.batches[0];
             const firstFile = Array.from(firstBatch.files.values())[0];
 
             expect(firstFile.content).toBeTruthy();
+            expect(firstFile.diff).toBeTruthy();
+        });
+
+        it("should include only diff (no content) in batches when extendReview is false", () => {
+            const filePatches: FilePatch[] = mockData.sampleFilePatches;
+            const result = createBatches(filePatches, mockSettings, false);
+
+            const firstBatch = result.batches[0];
+            const firstFile = Array.from(firstBatch.files.values())[0];
+
+            expect(firstFile.content).toBe("");
             expect(firstFile.diff).toBeTruthy();
         });
     });

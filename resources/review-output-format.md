@@ -5,7 +5,7 @@ Respond with a JSON array of findings. Each finding must have:
 - `lineNumber`: the line number (use 1 if unknown)
 - `severity`: one of "Critical", "Major", "Minor"
 - `description`: concise description of the issue
-- `suggestion`: optional CODE ONLY SUGGESTION (Corrected code snippet) to fix the issue, respect the original indentation
+- `suggestion`: optional CODE ONLY SUGGESTION (Corrected code snippet) to fix the issue, remember the original code indentation
 
 ```json
 [
@@ -25,7 +25,7 @@ If there are no issues, return an empty JSON array: `[]`
 ### `description` format
 
 ```markdown
-**[EMOJI] [SEVERITY]** `file/path/ClassName.cs:42`
+### **[EMOJI] [SEVERITY]** `file/path/ClassName.cs:42`
 
 Concise description of the issue.
 

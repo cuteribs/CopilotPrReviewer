@@ -41,8 +41,12 @@ export function countTokens(text: string): number {
     return encode(text).length;
 }
 
-export function createBatches(filePatches: FilePatch[], settings: AppSettings["copilot"]): BatchResult {
-    const availableTokens = settings.maxTokensPerBatch - settings.overheadTokens;
+export function createBatches(
+    filePatches: FilePatch[],
+    copilotSettings: AppSettings["copilot"],
+    extendReview: boolean = false,
+): BatchResult {
+    const availableTokens = copilotSettings.maxTokensPerBatch - copilotSettings.overheadTokens;
     const excluded: string[] = [];
     const stacks = new Map<TechStack, FilePatch[]>();
 
@@ -78,7 +82,7 @@ export function createBatches(filePatches: FilePatch[], settings: AppSettings["c
         for (const file of files) {
             const content = file.newContent ?? "";
             const diff = file.patch;
-            const fileTokens = countTokens(content) + countTokens(diff);
+            const fileTokens = countTokens(content) + (extendReview ? 0 : countTokens(diff));
 
             if (currentTokens + fileTokens > availableTokens && currentFiles.size > 0) {
                 batches.push({ batchNumber: batchNumber++, techStack: stack, totalTokens: currentTokens, files: currentFiles });

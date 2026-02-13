@@ -6,7 +6,7 @@ export async function reviewBatch(
     batch: ReviewBatch,
     settings: AppSettings,
 ): Promise<ReviewFinding[]> {
-    const prompt = buildReviewPrompt(batch, settings.review.guidelinesPath);
+    const prompt = buildReviewPrompt(batch, settings.review.guidelinesPath, settings.review.extendReview);
     const githubToken = process.env.GITHUB_TOKEN ?? undefined;
 
     let client: any;
@@ -94,10 +94,16 @@ export function extractJson(text: string): string | null {
     return null;
 }
 
-function buildReviewPrompt(batch: ReviewBatch, guidelinesPath?: string): string {
+function buildReviewPrompt(batch: ReviewBatch, guidelinesPath?: string, extendReview: boolean = false): string {
     const parts: string[] = [];
 
-    parts.push("You are an expert code reviewer. Review the following code changes and report issues.");
+    parts.push("You are an expert code reviewer.");
+    
+    if(extendReview) {
+        parts.push(" Review the full content of the following code files.");
+    } else {
+        parts.push(" Review the following code changes and report issues.");
+    }
     parts.push("");
 
     const guidelines = getGuidelines(batch.techStack, guidelinesPath);
@@ -122,7 +128,7 @@ function buildReviewPrompt(batch: ReviewBatch, guidelinesPath?: string): string 
             parts.push("");
         }
 
-        if (file.diff) {
+        if (!extendReview && file.diff) {
             parts.push("#### Diff:");
             parts.push("```diff");
             parts.push(file.diff);

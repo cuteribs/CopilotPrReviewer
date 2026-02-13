@@ -21,8 +21,8 @@ export async function runReview(prUrl: string, settings: AppSettings): Promise<R
     console.log(`Fetched ${filePatches.length} file changes`);
 
     // 4. Classify + filter + batch
-    const batchResult = createBatches(filePatches, settings.copilot);
-    console.log(`Created ${batchResult.batches.length} batches, excluded ${batchResult.excludedFiles.length} files`);
+    const batchResult = createBatches(filePatches, settings.copilot, settings.review.extendReview);
+    console.log(`Created ${batchResult.batches.length} batches, excluded ${batchResult.excludedFiles.length} files (review mode: ${settings.review.extendReview ? "full code" : "diff-only"})`);
 
     // 5. Review batches in parallel (with concurrency limit)
     const allFindings: ReviewFinding[] = [];

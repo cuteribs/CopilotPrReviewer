@@ -119,6 +119,7 @@ Create `appsettings.json` in your project root:
 | `--guidelines-path <path>` | Path to guidelines folder | Built-in guidelines |
 | `--max-parallel <n>` | Max parallel batch reviews | `2` |
 | `--no-comments` | Skip posting comments (dry run) | `false` |
+| `--extend-review` | Review full code files in addition to diffs (default: diff-only mode) | `false` |
 | `--timeout <seconds>` | Timeout in seconds | `120` |
 
 ## Custom Guidelines

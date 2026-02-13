@@ -147,6 +147,7 @@ export interface AppSettings {
     review: {
         guidelinesPath?: string;
         postComments: boolean;
+        extendReview: boolean;
     };
 }
 
@@ -163,5 +164,6 @@ export const defaultSettings: AppSettings = {
     },
     review: {
         postComments: true,
+        extendReview: false,
     },
 };

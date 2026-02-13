@@ -35,6 +35,7 @@ describe("reviewService", () => {
             },
             review: {
                 postComments: false,
+                extendReview: false,
             },
             azureDevOps: {
                 baseUrl: "https://dev.azure.com",
