@@ -1,7 +1,3 @@
----
-tokens: 9000
----
-
 # .NET Code Review Guidelines for AI Reviewers
 
 > **Target:** .NET 8+ (LTS) | **Audience:** Junior to Architect | **Scope:** Web APIs, Web Apps, Microservices, Libraries
@@ -993,6 +989,8 @@ public class Example
 | Magic Strings/Numbers | Maintenance nightmare | Constants, enums, configuration |
 | Boolean Parameters | Unclear call sites | Enums, separate methods |
 | Deep Nesting | Readability issues | Early returns, guard clauses |
+| High Cyclomatic Complexity | Hard to test and maintain | Break down into smaller methods, Strategy pattern |
+| Code Duplication (DRY) | Maintenance overhead, bug replication | Extract shared logic to helper methods, base classes, or services |
 | Temporal Coupling | Order-dependent method calls | Builder pattern, state machines |
 | Train Wreck (`a.b.c.d`) | Law of Demeter violation | Encapsulation |
 | Generic Repository | Hides ORM capabilities | Specific repositories |
@@ -1003,6 +1001,7 @@ public class Example
 |--------------|-------|-------------|
 | Comments explaining what | Indicates unclear code | Self-documenting code |
 | Commented-out code | Version control exists | Delete it |
+| Dead/Unused Code | Clutters the codebase | Remove unused variables, private methods, or classes |
 | Hungarian notation | Outdated convention | Modern C# naming |
 | Regions in methods | Method too large | Extract methods |
 

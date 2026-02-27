@@ -42,8 +42,30 @@ export function getGuidelines(techStack: TechStack, guidelinesPath?: string): st
     return undefined;
 }
 
-export function getReviewOutputFormat(): string {
-    const formatPath = join(resourcesDir, "review-output-format.md");
+export function getStrategy(extendReview: boolean, guidelinesPath?: string): string | undefined {
+    const fileName = extendReview ? "extended-pr-review-strategy.md" : "pr-review-strategy.md";
+
+    // Try external path first
+    if (guidelinesPath) {
+        const externalPath = join(guidelinesPath, fileName);
+        if (existsSync(externalPath)) {
+            const content = readFileSync(externalPath, "utf-8");
+            return content;
+        }
+    }
+
+    // Fall back to embedded resources
+    const embeddedPath = join(resourcesDir, fileName);
+    if (existsSync(embeddedPath)) {
+        const content = readFileSync(embeddedPath, "utf-8");
+        return content;
+    }
+
+    return undefined;
+}
+
+export function getOutputFormat(): string {
+    const formatPath = join(resourcesDir, "output-format.md");
     if (existsSync(formatPath)) {
         return readFileSync(formatPath, "utf-8");
     }

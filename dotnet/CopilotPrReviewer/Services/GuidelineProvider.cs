@@ -10,7 +10,7 @@ public sealed class GuidelineProvider
 	private readonly ReviewSettings _settings;
 	private readonly Dictionary<TechStack, string> _cache = [];
 
-	private static readonly string ReviewOutputFormatName = "Cuteribs.CopilotPrReviewer.Resources.review-output-format.md";
+	private static readonly string ReviewOutputFormatName = "Cuteribs.CopilotPrReviewer.Resources.output-format.md";
 
 	private static readonly Dictionary<TechStack, string> ResourceNames = new()
 	{

@@ -5,7 +5,7 @@ Respond with a JSON array of findings. Each finding must have:
 - `lineNumber`: the line number (use 1 if unknown)
 - `severity`: one of "Critical", "Major", "Minor"
 - `description`: concise description of the issue
-- `suggestion`: optional CODE ONLY SUGGESTION (Corrected code snippet) to fix the issue, remember the original code indentation
+- `suggestion`: optional CODE ONLY SUGGESTION (Corrected code snippet) to fix the issue, leave it empty if no actual code suggestion
 
 ```json
 [

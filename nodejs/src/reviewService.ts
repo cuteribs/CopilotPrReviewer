@@ -1,6 +1,6 @@
 import { CopilotClient } from "@github/copilot-sdk";
 import type { ReviewBatch, ReviewFinding, AppSettings } from "./models.js";
-import { getGuidelines, getReviewOutputFormat } from "./guidelines.js";
+import { getGuidelines, getOutputFormat as getOutputFormat, getStrategy } from "./prompts.js";
 
 export async function reviewBatch(
     batch: ReviewBatch,
@@ -41,7 +41,7 @@ export async function reviewBatch(
 
         await session.destroy();
 
-            console.warn(responseText);
+        console.warn(responseText);
         return parseFindings(responseText);
     } finally {
         await client.stop();
@@ -98,15 +98,22 @@ function buildReviewPrompt(batch: ReviewBatch, guidelinesPath?: string, extendRe
     const parts: string[] = [];
 
     parts.push("You are an expert code reviewer.");
-    
-    if(extendReview) {
+
+    if (extendReview) {
         parts.push(" Review the full content of the following code files.");
     } else {
         parts.push(" Review the following code changes and report issues.");
     }
     parts.push("");
 
+    const strategy = getStrategy(extendReview, guidelinesPath);
+    if (strategy) {
+        parts.push(strategy);
+        parts.push("");
+    }
+
     const guidelines = getGuidelines(batch.techStack, guidelinesPath);
+
     if (guidelines) {
         parts.push("## Review Guidelines");
         parts.push(guidelines);
@@ -137,7 +144,7 @@ function buildReviewPrompt(batch: ReviewBatch, guidelinesPath?: string, extendRe
         }
     }
 
-    parts.push(getReviewOutputFormat());
+    parts.push(getOutputFormat());
 
     return parts.join("\n");
 }
