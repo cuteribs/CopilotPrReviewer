@@ -3,8 +3,75 @@ import type {
     CommitDiffs, GitChange, AuthOptions,
 } from "./models.js";
 import { diffLines, type Change } from "diff";
+import { PublicClientApplication, type AccountInfo } from "@azure/msal-node";
+import { exec } from "child_process";
+import os from "os";
 
 const API_VERSION = "7.1";
+
+// OAuth constants — mirrors OAuthAuthenticator.cs
+const OAUTH_CLIENT_ID = "0d50963b-7bb9-4fe7-94c7-a99af00b5136";
+const OAUTH_AUTHORITY = "https://login.microsoftonline.com/common";
+const OAUTH_SCOPES = ["499b84ac-1321-427f-aa17-267ca6975798/.default"];
+
+let _oauthApp: PublicClientApplication | undefined;
+let _cachedAccount: AccountInfo | null = null;
+
+function getOAuthApp(): PublicClientApplication {
+    if (!_oauthApp) {
+        _oauthApp = new PublicClientApplication({
+            auth: {
+                clientId: OAUTH_CLIENT_ID,
+                authority: OAUTH_AUTHORITY,
+            },
+        });
+    }
+    return _oauthApp;
+}
+
+function openBrowser(url: string): Promise<void> {
+    const platform = os.platform();
+    if (platform === "win32") {
+        exec(`start "" "${url}"`);
+    } else if (platform === "darwin") {
+        exec(`open "${url}"`);
+    } else {
+        exec(`xdg-open "${url}"`);
+    }
+    return Promise.resolve();
+}
+
+async function getOAuthToken(): Promise<string> {
+    const app = getOAuthApp();
+
+    // Try silent authentication first — mirrors OAuthAuthenticator.GetTokenAsync
+    if (_cachedAccount) {
+        try {
+            const silentResult = await app.acquireTokenSilent({
+                scopes: OAUTH_SCOPES,
+                account: _cachedAccount,
+            });
+            if (silentResult?.accessToken) return silentResult.accessToken;
+        } catch {
+            // Fall through to interactive
+        }
+    }
+
+    // Interactive authentication via system browser
+    const result = await app.acquireTokenInteractive({
+        scopes: OAUTH_SCOPES,
+        openBrowser,
+        successTemplate: "Authentication successful! You may close this window.",
+        errorTemplate: "Authentication failed. Error: {error}. Please close this browser window and retry.",
+    });
+
+    if (!result?.accessToken) {
+        throw new Error("Failed to obtain Azure DevOps OAuth token.");
+    }
+
+    _cachedAccount = result.account;
+    return result.accessToken;
+}
 
 export class AzureDevOpsClient {
     private baseUrl: string;
@@ -139,8 +206,12 @@ export class AzureDevOpsClient {
             return { type: "pat", token: pat };
         }
 
-        // OAuth not implemented in Node.js version — use PAT
-        if (pat) return { type: "pat", token: pat };
+        // OAuth via MSAL — mirrors AuthenticatorFactory.CreateAuthenticator
+        if (authType === "oauth" || !authType) {
+            const token = await getOAuthToken();
+            return { type: "oauth", token };
+        }
+
         throw new Error("Azure DevOps authentication required. Set AZURE_DEVOPS_PAT environment variable or use --pat.");
     }
 

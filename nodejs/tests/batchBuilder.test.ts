@@ -98,7 +98,7 @@ describe("batchBuilder", () => {
 
     describe("createBatches", () => {
         const mockSettings: AppSettings["copilot"] = {
-            model: "gpt-4o",
+            model: "gpt-5-mini",
             maxTokensPerBatch: 50000,
             overheadTokens: 5000,
             maxParallelBatches: 2,

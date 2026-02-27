@@ -91,7 +91,7 @@ Create `appsettings.json` in your project root:
 ```json
 {
   "copilot": {
-    "model": "gpt-4o",
+    "model": "gpt-5-mini",
     "maxTokensPerBatch": 50000,
     "overheadTokens": 5000,
     "maxParallelBatches": 2,
@@ -113,8 +113,8 @@ Create `appsettings.json` in your project root:
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--pat <pat>` | Azure DevOps PAT | `$AZURE_DEVOPS_PAT` |
-| `--auth-type <type>` | Auth type: 'pat', 'oauth' | `bearer` |
-| `--model <model>` | AI model to use | `gpt-4o` |
+| `--auth-type <type>` | Auth type: 'pat', 'oauth' | auto detect |
+| `--model <model>` | AI model to use | `gpt-5-mini` |
 | `--github-token <token>` | GitHub token for Copilot | `$GITHUB_TOKEN` |
 | `--guidelines-path <path>` | Path to guidelines folder | Built-in guidelines |
 | `--max-parallel <n>` | Max parallel batch reviews | `2` |

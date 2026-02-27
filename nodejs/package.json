@@ -44,6 +44,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@azure/msal-node": "5.0.5",
     "@github/copilot-sdk": "0.1.23",
     "commander": "14.0.3",
     "diff": "8.0.3",
