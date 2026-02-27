@@ -51,17 +51,17 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 1.1 Critical Security Issues
 
-#### SQL Injection
+#### **[SEC-1]** SQL Injection
 - **Flag:** String concatenation or interpolation in SQL queries
 - **Flag:** Raw SQL without parameterization in EF Core (`FromSqlRaw`, `ExecuteSqlRaw`)
 - **Expect:** Parameterized queries, `FromSqlInterpolated`, or LINQ
 
-#### Cross-Site Scripting (XSS)
+#### **[SEC-2]** Cross-Site Scripting (XSS)
 - **Flag:** `Html.Raw()` with user-controlled input
 - **Flag:** Disabling request validation without justification
 - **Expect:** Proper encoding, Content Security Policy headers
 
-#### Authentication & Authorization
+#### **[SEC-3]** Authentication & Authorization
 - **Flag:** Missing `[Authorize]` on sensitive endpoints
 - **Flag:** Hardcoded credentials, API keys, or connection strings
 - **Flag:** Weak password policies or missing password hashing
@@ -70,43 +70,43 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 - **Flag:** `[AllowAnonymous]` on endpoints that should be protected
 - **Expect:** `[Authorize]` with appropriate policies, secrets in configuration/vault
 
-#### Sensitive Data Exposure
+#### **[SEC-4]** Sensitive Data Exposure
 - **Flag:** Logging sensitive data (passwords, tokens, PII)
 - **Flag:** Returning sensitive data in API responses unnecessarily
 - **Flag:** Storing sensitive data in plain text
 - **Flag:** Sensitive data in query strings (visible in logs/history)
 - **Expect:** Data masking, encryption at rest, minimal data exposure
 
-#### Insecure Deserialization
+#### **[SEC-5]** Insecure Deserialization
 - **Flag:** `BinaryFormatter`, `NetDataContractSerializer`, `SoapFormatter`
 - **Flag:** `TypeNameHandling.All` or `TypeNameHandling.Auto` in JSON.NET
 - **Expect:** `System.Text.Json` or JSON.NET with safe settings
 
-#### Path Traversal
+#### **[SEC-6]** Path Traversal
 - **Flag:** User input in file paths without validation
 - **Expect:** `Path.GetFullPath()` with base path validation
 
-#### CORS Misconfiguration
+#### **[SEC-7]** CORS Misconfiguration
 - **Flag:** `AllowAnyOrigin()` combined with `AllowCredentials()`
 - **Flag:** Wildcard origins in production
 - **Expect:** Explicit origin whitelist
 
 ### 1.2 Major Security Issues
 
-#### Cryptography
+#### **[SEC-8]** Cryptography
 - **Flag:** MD5, SHA1 for security purposes (acceptable for checksums)
 - **Flag:** ECB mode encryption
 - **Flag:** Hardcoded encryption keys or IVs
 - **Flag:** Custom cryptography implementations
 - **Expect:** SHA256+, AES-GCM, keys from secure storage
 
-#### Input Validation
+#### **[SEC-9]** Input Validation
 - **Flag:** Missing validation on API inputs
 - **Flag:** Missing `[FromBody]`, `[FromQuery]` explicit binding
 - **Flag:** Accepting unbounded collections without limits
 - **Expect:** FluentValidation or DataAnnotations, explicit model binding
 
-#### HTTP Security Headers
+#### **[SEC-10]** HTTP Security Headers
 - **Flag:** Missing security headers (HSTS, X-Content-Type-Options, etc.)
 - **Expect:** Security headers middleware configured
 
@@ -116,21 +116,21 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 2.1 Critical Performance Issues
 
-#### Async/Await Anti-Patterns
+#### **[PERF-1]** Async/Await Anti-Patterns
 - **Flag:** `.Result`, `.Wait()`, `.GetAwaiter().GetResult()` (sync-over-async)
 - **Flag:** `async void` (except event handlers)
 - **Flag:** Missing `ConfigureAwait(false)` in library code
 - **Flag:** `Task.Run()` wrapping already async methods
 - **Expect:** Proper async propagation, `ValueTask` for hot paths
 
-#### Memory Leaks
+#### **[PERF-2]** Memory Leaks
 - **Flag:** Event handlers not unsubscribed
 - **Flag:** `IDisposable` not disposed (missing `using` or `await using`)
 - **Flag:** Static references to request-scoped objects
 - **Flag:** Capturing `HttpContext` in background tasks
 - **Expect:** `using` statements, proper disposal patterns
 
-#### N+1 Query Problems
+#### **[PERF-3]** N+1 Query Problems
 - **Flag:** LINQ queries inside loops
 - **Flag:** Missing `.Include()` for required navigation properties
 - **Flag:** Lazy loading enabled without justification
@@ -138,7 +138,7 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 2.2 Major Performance Issues
 
-#### Collection Operations
+#### **[PERF-4]** Collection Operations
 - **Flag:** Multiple enumerations of `IEnumerable<T>` (call `.ToList()` once)
 - **Flag:** `Count() > 0` instead of `Any()`
 - **Flag:** `FirstOrDefault()` then null check instead of `Any()` with predicate
@@ -146,26 +146,26 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 - **Flag:** Using `List<T>` when `IReadOnlyList<T>` or array suffices
 - **Expect:** Single enumeration, appropriate LINQ methods
 
-#### String Operations
+#### **[PERF-5]** String Operations
 - **Flag:** String concatenation in loops (use `StringBuilder`)
 - **Flag:** `String.Format` in hot paths (use interpolation or `StringBuilder`)
 - **Flag:** Case-insensitive comparison without `StringComparison` parameter
 - **Expect:** `StringBuilder` for loops, `StringComparison.OrdinalIgnoreCase`
 
-#### Boxing/Allocations
+#### **[PERF-6]** Boxing/Allocations
 - **Flag:** Value types used with non-generic collections
 - **Flag:** Excessive LINQ in hot paths without benchmarking
 - **Flag:** Closures capturing variables unnecessarily
 - **Expect:** Generics, `Span<T>`, `stackalloc` where appropriate
 
-#### Database Performance
+#### **[PERF-7]** Database Performance
 - **Flag:** `AsNoTracking()` missing for read-only queries
 - **Flag:** Loading entire entities when projection would suffice
 - **Flag:** Missing indexes hinted by query patterns
 - **Flag:** Unbounded queries without pagination
 - **Expect:** Projections, `AsNoTracking()`, pagination
 
-#### Caching
+#### **[PERF-8]** Caching
 - **Flag:** Expensive operations repeated without caching consideration
 - **Flag:** Cache keys that could collide
 - **Flag:** Missing cache invalidation strategy
@@ -184,27 +184,27 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 3.1 Critical Correctness Issues
 
-#### Null Reference Issues
+#### **[CORR-1]** Null Reference Issues
 - **Flag:** Possible null dereference without null checks
 - **Flag:** Suppressing nullable warnings (`!`) without justification
 - **Flag:** Missing null checks on external input
 - **Expect:** Null-conditional operators, proper null guards, nullable reference types enabled
 
-#### Exception Handling
+#### **[CORR-2]** Exception Handling
 - **Flag:** Empty catch blocks (swallowing exceptions)
 - **Flag:** Catching `Exception` without re-throwing or logging
 - **Flag:** `throw ex` instead of `throw` (loses stack trace)
 - **Flag:** Exception handling logic that alters program flow incorrectly
 - **Expect:** Specific exception types, proper logging, `throw;` to rethrow
 
-#### Thread Safety
+#### **[CORR-3]** Thread Safety
 - **Flag:** Shared mutable state without synchronization
 - **Flag:** Non-thread-safe collections used in concurrent scenarios
 - **Flag:** Race conditions in singleton initialization
 - **Flag:** Modifying collections while iterating
 - **Expect:** `ConcurrentDictionary`, `lock`, `Interlocked`, immutable types
 
-#### Resource Management
+#### **[CORR-4]** Resource Management
 - **Flag:** Database connections not disposed
 - **Flag:** HTTP clients created per request (use `IHttpClientFactory`)
 - **Flag:** File handles not closed in all code paths
@@ -212,19 +212,19 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 3.2 Major Correctness Issues
 
-#### Equality and Comparison
+#### **[CORR-5]** Equality and Comparison
 - **Flag:** Reference equality on value objects
 - **Flag:** `GetHashCode()` override without `Equals()` or vice versa
 - **Flag:** Mutable fields in `GetHashCode()`
 - **Expect:** Proper equality implementation, records for value semantics
 
-#### Async Correctness
+#### **[CORR-6]** Async Correctness
 - **Flag:** Returning null instead of `Task.CompletedTask` or `Task.FromResult`
 - **Flag:** Missing cancellation token propagation
 - **Flag:** Fire-and-forget tasks without exception handling
 - **Expect:** Cancellation token support, proper task handling
 
-#### Date/Time Handling
+#### **[CORR-7]** Date/Time Handling
 - **Flag:** `DateTime` used for UTC times (use `DateTimeOffset`)
 - **Flag:** Time zone assumptions
 - **Flag:** Date comparisons without considering time component
@@ -236,14 +236,14 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 4.1 Critical Architecture Issues
 
-#### Dependency Injection
+#### **[ARCH-1]** Dependency Injection
 - **Flag:** `new`-ing services that should be injected
 - **Flag:** Service Locator pattern (`IServiceProvider.GetService` in business logic)
 - **Flag:** Captive dependencies (singleton depending on scoped)
 - **Flag:** Circular dependencies
 - **Expect:** Constructor injection, proper lifetime management
 
-#### Layer Violations
+#### **[ARCH-2]** Layer Violations
 - **Flag:** Domain/business logic depending on infrastructure
 - **Flag:** Controllers containing business logic
 - **Flag:** Data access in presentation layer
@@ -252,14 +252,14 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 4.2 Major Architecture Issues
 
-#### SOLID Principles
+#### **[ARCH-3]** SOLID Principles
 - **Flag:** Classes with multiple responsibilities (SRP violation)
 - **Flag:** God classes / methods exceeding reasonable size
 - **Flag:** Tight coupling to concrete implementations (DIP violation)
 - **Flag:** Interface segregation violations (large interfaces)
 - **Expect:** Small focused classes, dependency on abstractions
 
-#### Design Patterns
+#### **[ARCH-4]** Design Patterns
 - **Flag:** Incorrect pattern implementation
 - **Flag:** Over-engineering simple solutions
 - **Flag:** Missing appropriate patterns (e.g., Strategy for conditionals)
@@ -271,7 +271,7 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 
 ### 5.1 Layer Responsibilities
 
-#### Domain Layer (Core/Entities)
+#### **[CLEAN-1]** Domain Layer (Core/Entities)
 **Purpose:** Contains enterprise business rules, entities, value objects, domain events, and domain services.
 
 ##### Critical Issues
@@ -303,7 +303,7 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 - **Flag:** Child entities accessible without going through aggregate root
 - **Expect:** Small aggregates, ID references, root controls children
 
-#### Application Layer
+#### **[CLEAN-2]** Application Layer
 **Purpose:** Contains application business rules, use cases, commands/queries, DTOs, and interfaces for infrastructure.
 
 ##### Critical Issues
@@ -333,7 +333,7 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 - **Flag:** Missing mapping configuration (AutoMapper, Mapster)
 - **Expect:** Simple data carriers, explicit mapping, versioned DTOs for APIs
 
-#### Infrastructure Layer
+#### **[CLEAN-3]** Infrastructure Layer
 **Purpose:** Contains implementations of interfaces defined in Application layer, external service integrations, database access.
 
 ##### Critical Issues
@@ -356,7 +356,7 @@ This document provides comprehensive guidelines for AI-powered code review of .N
 - **Flag:** CRUD repositories for read-heavy scenarios
 - **Expect:** Specific repositories, materialized returns, CQRS for complex reads
 
-#### Presentation Layer (API/Web)
+#### **[CLEAN-4]** Presentation Layer (API/Web)
 **Purpose:** Contains controllers, view models, API endpoints, middleware, and DI configuration.
 
 ##### Critical Issues
@@ -403,20 +403,20 @@ Domain
 
 ### 5.3 CQRS Pattern (when applicable)
 
-#### Command Guidelines
+#### **[CLEAN-5]** Command Guidelines
 - **Flag:** Commands returning data (should return void/ID/Result)
 - **Flag:** Commands with query-like names
 - **Flag:** Multiple commands in single handler
 - **Flag:** Missing command validation
 - **Expect:** Clear naming, single responsibility, validation pipeline
 
-#### Query Guidelines
+#### **[CLEAN-6]** Query Guidelines
 - **Flag:** Queries modifying state
 - **Flag:** Queries going through domain layer unnecessarily
 - **Flag:** Missing pagination on collection queries
 - **Expect:** Direct data access for reads, projections, read-optimized models
 
-#### Handler Guidelines
+#### **[CLEAN-7]** Handler Guidelines
 - **Flag:** Handlers with mixed read/write operations
 - **Flag:** Complex orchestration in handlers (move to domain services)
 - **Flag:** Missing cross-cutting concerns (logging, validation)
@@ -436,14 +436,14 @@ Domain
 
 ### 6.1 Critical API Issues
 
-#### REST Conventions
+#### **[API-1]** REST Conventions
 - **Flag:** GET endpoints modifying state
 - **Flag:** Non-idempotent PUT operations
 - **Flag:** Missing HTTP status codes for error cases
 - **Flag:** Exposing internal exceptions in responses
 - **Expect:** Proper HTTP verbs, Problem Details for errors (RFC 7807)
 
-#### Error Handling
+#### **[API-2]** Error Handling
 - **Flag:** Inconsistent error response format
 - **Flag:** Stack traces in production error responses
 - **Flag:** Generic 500 errors without logging
@@ -451,19 +451,19 @@ Domain
 
 ### 6.2 Major API Issues
 
-#### Versioning
+#### **[API-3]** Versioning
 - **Flag:** Breaking changes without version bump
 - **Flag:** Missing API versioning strategy
 - **Expect:** URL or header-based versioning, backward compatibility
 
-#### Request/Response Design
+#### **[API-4]** Request/Response Design
 - **Flag:** Overly large request/response objects
 - **Flag:** Missing pagination on collection endpoints
 - **Flag:** Circular references in serialization
 - **Flag:** Exposing internal IDs unnecessarily
 - **Expect:** DTOs, pagination, proper serialization settings
 
-#### Documentation
+#### **[API-5]** Documentation
 - **Flag:** Missing XML documentation on public APIs
 - **Flag:** Swagger/OpenAPI not reflecting actual behavior
 - **Flag:** Missing example values for complex types
@@ -482,14 +482,14 @@ Domain
 
 ### 7.1 Entity Framework Core
 
-#### Critical Issues
+#### **[DA-1]** Critical Issues
 - **Flag:** Transactions not used for multi-entity operations
 - **Flag:** SaveChanges in loops
 - **Flag:** Missing migration for schema changes
 - **Flag:** Synchronous database calls in async context
 - **Expect:** Proper transaction handling, batch operations
 
-#### Major Issues
+#### **[DA-2]** Major Issues
 - **Flag:** Business logic in repositories
 - **Flag:** Generic repository anti-pattern (hiding EF capabilities)
 - **Flag:** Missing `AsNoTracking()` for read operations
@@ -497,20 +497,20 @@ Domain
 - **Flag:** Missing query splitting for cartesian explosion
 - **Expect:** Specifications pattern, appropriate EF usage
 
-#### Minor Issues
+#### **[DA-3]** Minor Issues
 - **Flag:** Missing index configuration for frequently queried columns
 - **Flag:** Implicit conversions in queries preventing index usage
 - **Expect:** Proper indexing, explicit type handling
 
 ### 7.2 Dapper
 
-#### Critical Issues
+#### **[DA-4]** Critical Issues
 - **Flag:** SQL injection via string concatenation
 - **Flag:** Missing parameter validation
 - **Flag:** Connections not disposed
 - **Expect:** Parameterized queries, `using` statements
 
-#### Major Issues
+#### **[DA-5]** Major Issues
 - **Flag:** Manual mapping when AutoMapper/Mapster appropriate
 - **Flag:** Large result sets without streaming
 - **Expect:** Appropriate mapping, buffered vs unbuffered queries
@@ -528,7 +528,7 @@ Domain
 
 ### 8.2 FluentValidation
 
-#### Major Issues
+#### **[VAL-1]** Major Issues
 - **Flag:** Validators not registered in DI
 - **Flag:** Business rules in validators (belongs in domain)
 - **Flag:** Missing `CascadeMode` for dependent rules
@@ -536,7 +536,7 @@ Domain
 - **Flag:** Complex validation logic not extracted to custom validators
 - **Expect:** Registered validators, input validation only, proper async
 
-#### Minor Issues
+#### **[VAL-2]** Minor Issues
 - **Flag:** Duplicate validation rules across validators
 - **Flag:** Missing custom error messages
 - **Flag:** Overly complex rule chains
@@ -544,7 +544,7 @@ Domain
 
 ### 8.3 DataAnnotations
 
-#### Major Issues
+#### **[VAL-3]** Major Issues
 - **Flag:** Missing `[Required]` on non-nullable reference types
 - **Flag:** Missing range/length constraints on user input
 - **Flag:** Custom validation attributes with side effects
@@ -552,7 +552,7 @@ Domain
 
 ### 8.4 Domain Validation
 
-#### Major Issues
+#### **[VAL-4]** Major Issues
 - **Flag:** Domain invariants not enforced in constructors
 - **Flag:** Validation exceptions instead of Result pattern
 - **Flag:** Validation scattered across application layer
@@ -571,7 +571,7 @@ Domain
 
 ### 9.2 Options Pattern
 
-#### Major Issues
+#### **[CONFIG-1]** Major Issues
 - **Flag:** Direct `IConfiguration` injection in services
 - **Flag:** Missing `IOptions<T>`, `IOptionsSnapshot<T>`, or `IOptionsMonitor<T>`
 - **Flag:** Options classes without validation
@@ -579,14 +579,14 @@ Domain
 - **Flag:** Missing `[Required]` attributes on required options
 - **Expect:** Strongly-typed options, validation, appropriate lifetime
 
-#### Minor Issues
+#### **[CONFIG-2]** Minor Issues
 - **Flag:** Options not organized by feature/section
 - **Flag:** Missing default values where appropriate
 - **Expect:** Organized configuration sections, sensible defaults
 
 ### 9.3 Environment-Specific Configuration
 
-#### Major Issues
+#### **[CONFIG-3]** Major Issues
 - **Flag:** Environment checks in code instead of configuration
 - **Flag:** Missing environment-specific transforms
 - **Flag:** Hardcoded environment names
@@ -678,7 +678,7 @@ Domain
 
 ### 12.2 Polly Integration
 
-#### Major Issues
+#### **[RES-1]** Major Issues
 - **Flag:** Hardcoded retry counts/delays
 - **Flag:** Retrying on all exceptions (should be selective)
 - **Flag:** Missing jitter in retry delays
@@ -686,14 +686,14 @@ Domain
 - **Flag:** Bulkhead not used for resource isolation
 - **Expect:** Configurable policies, specific exceptions, jitter, monitoring
 
-#### Minor Issues
+#### **[RES-2]** Minor Issues
 - **Flag:** Policies not defined in DI (scattered across code)
 - **Flag:** Missing policy documentation
 - **Expect:** Centralized policy definitions, clear naming
 
 ### 12.3 HTTP Client Resiliency
 
-#### Major Issues
+#### **[RES-3]** Major Issues
 - **Flag:** `HttpClient` without resilience policies
 - **Flag:** Missing `HttpClientFactory`
 - **Flag:** Infinite timeout or very long timeouts
@@ -712,21 +712,21 @@ Domain
 
 ### 13.2 System.Text.Json (Preferred)
 
-#### Major Issues
+#### **[SER-1]** Major Issues
 - **Flag:** Missing `JsonSerializerOptions` configuration for APIs
 - **Flag:** Ignoring serialization errors silently
 - **Flag:** Missing source generators for performance-critical code
 - **Flag:** Incorrect property naming policy
 - **Expect:** Consistent options, source generators, proper error handling
 
-#### Minor Issues
+#### **[SER-2]** Minor Issues
 - **Flag:** Missing `[JsonPropertyName]` for non-standard names
 - **Flag:** Enum serialization as numbers when strings preferred
 - **Expect:** Explicit configuration, string enums
 
 ### 13.3 Newtonsoft.Json (Legacy)
 
-#### Major Issues
+#### **[SER-3]** Major Issues
 - **Flag:** Default settings used (should be explicit)
 - **Flag:** Missing `ReferenceLoopHandling`
 - **Flag:** `DateTimeZoneHandling` not configured
@@ -738,13 +738,13 @@ Domain
 
 ### 14.1 MediatR
 
-#### Critical Issues
+#### **[MSG-1]** Critical Issues
 - **Flag:** Handlers with side effects in pipeline
 - **Flag:** Missing exception handling in handlers
 - **Flag:** Circular handler dependencies
 - **Expect:** Clean handlers, proper error handling
 
-#### Major Issues
+#### **[MSG-2]** Major Issues
 - **Flag:** Notifications without any handlers
 - **Flag:** Overly complex pipelines
 - **Flag:** Request/handler in different assemblies without registration
@@ -753,13 +753,13 @@ Domain
 
 ### 14.2 Message Queues (MassTransit, etc.)
 
-#### Critical Issues
+#### **[MSG-3]** Critical Issues
 - **Flag:** Messages without idempotency handling
 - **Flag:** Missing dead-letter queue configuration
 - **Flag:** Sensitive data in message payloads
 - **Expect:** Idempotent consumers, DLQ, data protection
 
-#### Major Issues
+#### **[MSG-4]** Major Issues
 - **Flag:** Missing message versioning strategy
 - **Flag:** Consumers with external dependencies not handling failures
 - **Flag:** Missing saga/state machine for complex workflows
@@ -779,7 +779,7 @@ Domain
 
 ### 15.2 Microsoft.FeatureManagement
 
-#### Major Issues
+#### **[FM-1]** Major Issues
 - **Flag:** Missing `IFeatureManager` DI (using static checks)
 - **Flag:** Feature filters without proper configuration
 - **Flag:** Missing feature flag documentation
@@ -823,14 +823,14 @@ Domain
 
 ### 17.1 Unit Testing
 
-#### Critical Issues
+#### **[TEST-1]** Critical Issues
 - **Flag:** Tests with no assertions
 - **Flag:** Tests that always pass (tautologies)
 - **Flag:** Tests modifying shared state without cleanup
 - **Flag:** Tests calling production external services
 - **Expect:** Meaningful assertions, proper test isolation
 
-#### Major Issues
+#### **[TEST-2]** Major Issues
 - **Flag:** Missing test coverage for critical paths
 - **Flag:** Overly complex test setup (indicates SUT design issues)
 - **Flag:** Testing implementation details instead of behavior
@@ -838,7 +838,7 @@ Domain
 - **Flag:** Hard-coded magic values without explanation
 - **Expect:** Behavior-focused tests, clear Arrange-Act-Assert
 
-#### Minor Issues
+#### **[TEST-3]** Minor Issues
 - **Flag:** Non-descriptive test names
 - **Flag:** Duplicate test setup code (use fixtures)
 - **Flag:** Missing test categories/traits
@@ -846,7 +846,7 @@ Domain
 
 ### 17.2 Integration Testing
 
-#### Major Issues
+#### **[TEST-4]** Major Issues
 - **Flag:** Integration tests without database cleanup
 - **Flag:** Tests depending on external service availability
 - **Flag:** Missing `WebApplicationFactory` usage for API tests
@@ -855,7 +855,7 @@ Domain
 
 ### 17.3 E2E Testing
 
-#### Major Issues
+#### **[TEST-5]** Major Issues
 - **Flag:** Brittle selectors (implementation-dependent)
 - **Flag:** Missing wait strategies (race conditions)
 - **Flag:** Tests not cleaning up created data
@@ -890,7 +890,7 @@ Domain
 
 ### 19.1 Solution Structure (Clean Architecture)
 
-#### Expected Structure
+#### **[PROJ-1]** Expected Structure
 ```
 src/
 ├── Domain/                    # Enterprise business rules
@@ -920,13 +920,13 @@ src/
     └── Program.cs
 ```
 
-#### Critical Structure Issues
+#### **[PROJ-2]** Critical Structure Issues
 - **Flag:** Domain project referencing Infrastructure
 - **Flag:** Application project referencing Presentation
 - **Flag:** Missing separation between layers
 - **Expect:** Clear project boundaries, proper references
 
-#### Major Structure Issues
+#### **[PROJ-3]** Major Structure Issues
 - **Flag:** Mixed responsibilities in single project
 - **Flag:** Feature folders inconsistently organized
 - **Flag:** Missing `DependencyInjection.cs` per layer
@@ -935,7 +935,7 @@ src/
 
 ### 19.2 Namespace Conventions
 
-#### Major Issues
+#### **[PROJ-4]** Major Issues
 - **Flag:** Namespace not matching folder structure
 - **Flag:** Inconsistent namespace patterns
 - **Flag:** Root namespace too generic
@@ -943,7 +943,7 @@ src/
 
 ### 19.3 File Organization
 
-#### Major Issues
+#### **[PROJ-5]** Major Issues
 - **Flag:** Multiple public types in single file
 - **Flag:** File name not matching type name
 - **Flag:** Related types scattered across folders
@@ -951,7 +951,7 @@ src/
 
 ### 19.4 Class Organization
 
-#### Recommended Member Order
+#### **[PROJ-6]** Recommended Member Order
 ```csharp
 public class Example
 {
@@ -968,7 +968,7 @@ public class Example
 }
 ```
 
-#### Minor Issues
+#### **[PROJ-7]** Minor Issues
 - **Flag:** Inconsistent member ordering
 - **Flag:** Related members not grouped together
 - **Expect:** Consistent ordering within project
