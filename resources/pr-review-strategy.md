@@ -137,6 +137,31 @@ Do not only verify the happy path. For every new operation that can fail, verify
 
 ---
 
+### Rule 11 — Verify Naming Conventions
+
+Names communicate intent. A misleading or inconsistent name is a defect — it will be misread by the next developer who touches the code.
+
+**For file names, flag if:**
+- A file's name does not reflect its primary export or responsibility (e.g., `utils.ts` wrapping a single domain-specific class)
+- A file's naming style is inconsistent with the established pattern in the same directory (e.g., `UserService.ts` alongside `order-service.ts`)
+- A test file does not mirror the naming convention of the file it tests (e.g., `user.spec.ts` alongside other `*.test.ts` files)
+
+**For class and type names, flag if:**
+- A class name does not follow the PascalCase convention (or the established convention for the language)
+- A suffix (`Service`, `Repository`, `Controller`, `Handler`, `Manager`, `Factory`) does not accurately describe the class's actual role
+- An interface or abstract type naming convention is inconsistent with the rest of the codebase (e.g., `IUserService` in a codebase that otherwise omits the `I` prefix)
+- A class name is so generic it could apply to anything in the project (`Manager`, `Helper`, `Processor` with no qualifying noun)
+
+**For variable and object names, flag if:**
+- A name is so generic it conveys no intent (`data`, `temp`, `obj`, `result`, `info`) where a meaningful name is possible
+- A boolean is named without a predicate form where the codebase consistently uses one (`isActive`, `hasPermission`, `shouldRetry`)
+- A constant's casing is inconsistent with the established convention (e.g., `UPPER_SNAKE_CASE` mixed with `camelCase` for values of the same kind)
+- A name is actively misleading — it implies a different type, scope, or behavior than the identifier actually has (e.g., a function named `getUser` that also writes to the database)
+
+**Do not flag** minor naming preference differences (e.g., `fetchUser` vs `getUser`) unless an explicit convention exists in the codebase that is being violated.
+
+---
+
 ### Rule 10 — Scope Feedback to This PR Only
 
 **Do:**
@@ -160,5 +185,6 @@ Before writing your final review, verify each item:
 - [ ] I checked each file's imports for layer/dependency violations using its path
 - [ ] I traced at least one failure path for every new operation that can fail
 - [ ] I checked every new input surface for missing validation or authorization
+- [ ] I checked that new file names, class names, and variable names are consistent with the established conventions in the codebase
 - [ ] I did not flag pre-existing issues unrelated to this PR
 - [ ] Where context was missing, I stated what was missing and how it limits the review

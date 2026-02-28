@@ -64,7 +64,7 @@ You have the full import/dependency section of every file. Use it.
 You have all the changed files. This is something a diff review cannot do — use it.
 
 **Compare across the full file set:**
-- **Naming** — Is the same concept named the same way in every file? (e.g., `userId` vs `user_id` vs `uid` without a clear reason)
+- **Naming** — Is the same concept named the same way in every file? (e.g., `userId` vs `user_id` vs `uid` without a clear reason; `getOrder` in one file vs `fetchOrder` in another for the same operation)
 - **Error handling** — Is the same strategy applied consistently? (e.g., some files throw, others return null, others swallow silently)
 - **Patterns** — Are validation approach, response shape, and logging style applied consistently across similar operations?
 - **Logic** — Does the same or near-identical logic appear in multiple files where a shared abstraction should exist?
@@ -157,7 +157,33 @@ When a file defines or implements an interface, abstract type, or declared contr
 
 ---
 
-### Rule 10 — Prioritize and Scope Your Findings Correctly
+### Rule 10 — Audit Naming Conventions Across All Files
+
+You have the full file set. Use it to enforce naming consistency at every level — file, class, and identifier.
+
+**For file names, flag if:**
+- A file's name does not reflect its primary export or responsibility (e.g., `helpers.ts` containing a single domain-specific class)
+- A file's naming style is inconsistent with the established pattern in the same directory (e.g., `UserService.ts` alongside `order-service.ts`)
+- A test file does not mirror the naming convention of the file it tests (e.g., `user.spec.ts` while all other test files use `*.test.ts`)
+
+**For class and type names, flag if:**
+- A class name does not follow PascalCase (or the established convention for the language/framework)
+- A suffix (`Service`, `Repository`, `Controller`, `Handler`, `Manager`, `Factory`) does not accurately describe the class's actual role, or is used inconsistently across files with similar responsibilities
+- Interface or abstract type naming convention is inconsistent across files (e.g., `IUserService` in one file vs `OrderService` interface in another, with no established reason)
+- A class name is so generic it could apply to anything (`Manager`, `Helper`, `Processor` without a qualifying noun)
+
+**For variable and object names, flag if:**
+- A name is so generic it conveys no intent (`data`, `temp`, `obj`, `result`, `info`) where a meaningful name is clearly possible
+- A boolean is named without a predicate form where the codebase consistently uses one (`isActive`, `hasPermission`, `shouldRetry`)
+- A constant's casing is inconsistent with the established convention (e.g., `UPPER_SNAKE_CASE` mixed with `camelCase` for values of the same kind)
+- A name is actively misleading — it implies a different type, scope, or behavior than what the identifier actually does (e.g., a function named `getUser` that also modifies state)
+- The same concept is represented under different names across files (e.g., `userId` in one file, `user_id` in another, `uid` in a third) with no clear justification
+
+**Do not flag** minor stylistic synonyms (`fetch` vs `get`, `create` vs `build`) unless an explicit naming convention exists in the codebase that is being violated.
+
+---
+
+### Rule 11 — Prioritize and Scope Your Findings Correctly
 
 Unlike diff-based review, you are reviewing the complete current state — not just what changed.
 
@@ -184,6 +210,7 @@ Before writing your final review, verify each item:
 - [ ] I read every provided file completely, from top to bottom
 - [ ] I checked every file's imports for layer and dependency violations using its path
 - [ ] I compared naming conventions, error handling patterns, and logic across all files for consistency
+- [ ] I audited file names, class names, and identifier names against the established conventions visible in the provided file set
 - [ ] I traced at least one failure path for every external operation (network, file, database) in every file
 - [ ] I checked every input-accepting surface for missing validation and authorization
 - [ ] I verified that all defined interfaces or contracts have complete implementations in the provided files
